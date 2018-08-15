@@ -847,7 +847,7 @@ namespace AdminWebApp.Controllers
         /// <returns></returns>  
         public JsonResult Get_AllEmployee()
         {
-            using (webappdbEntities Obj = new webappdbEntities())
+            using (webAppDbEntities Obj = new webAppDbEntities())
             {
                 List<Menu> Emp = Obj.Menus.ToList();
                 return Json(Emp, JsonRequestBehavior.AllowGet);
@@ -860,7 +860,7 @@ namespace AdminWebApp.Controllers
         /// <returns></returns>  
         public JsonResult Get_EmployeeById(string Id)
         {
-            using (webappdbEntities Obj = new webappdbEntities())
+            using (webAppDbEntities Obj = new webAppDbEntities())
             {
                 int EmpId = int.Parse(Id);
                 return Json(Obj.Menus.Find(EmpId), JsonRequestBehavior.AllowGet);
@@ -875,7 +875,7 @@ namespace AdminWebApp.Controllers
         {
             if (menu != null)
             {
-                using (webappdbEntities Obj = new webappdbEntities())
+                using (webAppDbEntities Obj = new webAppDbEntities())
                 {
                     Obj.Menus.Add(menu);
                     Obj.SaveChanges();
@@ -896,7 +896,7 @@ namespace AdminWebApp.Controllers
         {
             if (menu != null)
             {
-                using (webappdbEntities Obj = new webappdbEntities())
+                using (webAppDbEntities Obj = new webAppDbEntities())
                 {
                     var menu_ = Obj.Entry(menu);
                     if (menu_.State == EntityState.Detached)
@@ -922,7 +922,7 @@ namespace AdminWebApp.Controllers
         {
             if (menu != null)
             {
-                using (webappdbEntities Obj = new webappdbEntities())
+                using (webAppDbEntities Obj = new webAppDbEntities())
                 {
                     var menu_ = Obj.Entry(menu);
                     Menu EmpObj = Obj.Menus.Where(x => x.MenuId == menu.MenuId).FirstOrDefault();
