@@ -1,0 +1,24 @@
+﻿@{
+    ViewBag.Title = "ConfirmYourEmail";
+}
+<div class="row" id="ConfirmYourEmail">
+    <h2>Email Not Confirmed</h2>
+    <h6>Your Email is not confirmed. Please check your Email and click the link to confirm.</h6>
+    <h6>Click <a href="javascript:void(0)" id="UserId">here</a> to resend.</h6>
+</div>
+<div class="row" id="EmailResend" style="display:none">
+    <h3>
+        Thank you Please check your Email and click the link in order to confirm.
+    </h3>
+</div>
+<div class="row error" id="EmailError" style="display:none">
+    <h3>
+        Thank you Please check your Email and click the link in order to confirm.
+    </h3>
+</div>
+<script>
+    $("#UserId").on("click", function () {
+        ResendEmail('@ViewBag.UserId')
+    });
+</script>
+

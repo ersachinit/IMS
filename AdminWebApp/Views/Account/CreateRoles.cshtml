@@ -1,0 +1,75 @@
+﻿@model IEnumerable<Microsoft.AspNet.Identity.EntityFramework.IdentityRole>
+@using AdminWebApp.Models
+@{
+    ViewBag.Title = "Manage Roles";
+}
+<div class="panel panel-primary">
+    <div class="panel-heading">
+        <h3 class="box-title">
+            <b>Roles</b>
+        </h3>
+        <h5>Create a new Role.</h5>
+    </div>
+    <!-- /.box-header -->
+    <div class="panel-body">
+        <div class="container">
+            @*<h1 class="well">Registration Form</h1>*@
+            <div class="col-lg-12 well" style="padding-left:35px;padding-right:35px">
+                <div class="row">
+                    @Html.ValidationSummary("", new { @class = "text-danger" })
+                    @using (Html.BeginForm("CreateRoles", "Account", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+                    {
+                        var model = new CreateRoleModel();
+                        @Html.Partial("~/Views/Partials/CreateRole.cshtml", model)
+                    }
+                </div>
+            </div>
+        </div><hr />
+        <table class="table table-hover" id="RoleTable">
+            <thead>
+                <tr>
+                    <th>S.N</th>
+                    <th>Role Name</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                @{ var a = 0;}
+                @foreach (var item in Model)
+                {
+                    a = a + 1;
+                    <tr>
+                        <td>@a</td>
+                        <td>@item.Name</td>
+                        <td>
+                            @if (item.Name != "Admin")
+                            {
+                                <a href="@Url.Action("DeleteRole", "Account", new { RoleName = @item.Name })"><i class="fas fa-trash fa-2x"></i></a>
+                            }
+                            else
+                            {
+                                <a href="javascript:void(0)"><i class="far fa-times-circle fa-2x" style="color:red" title="No Action"></i></a>
+
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+@section scripts{
+    <script>
+        $(function () {
+            $('#RoleTable').DataTable({
+                "paging": true,
+                "lengthChange": true,
+                "searching": true,
+                "ordering": true,
+                "info": true,
+                "autoWidth": true
+            });
+        });
+    </script>
+    @Scripts.Render("~/bundles/jqueryval")
+}
