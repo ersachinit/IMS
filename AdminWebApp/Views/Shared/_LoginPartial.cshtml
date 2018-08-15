@@ -7,23 +7,23 @@
         if (ViewData["FirstName"] == null)
         {
             ViewData["FirstName"] = User.Identity.GetUserName();
+            if (User.IsInRole("Admin"))
+            {
+                ViewData["FirstName"] = "Admin";
+            }
         }
         <ul class="nav navbar-nav">
+            <li><a href="javascript:void(0);" data-toggle="modal" data-target="#myModal" class="userImage"><img src="@Session["UserPhoto"]" name="aboutme" width="20" height="20" alt="User" class="img-circle"> Hello @ViewData["FirstName"]!</a></li>
             <li class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-                    <img src="@Session["UserPhoto"]" name="aboutme" width="20" height="20" alt="User" class="img-circle"> Account <span class="caret"></span>
+                    <span class="caret"></span>
                 </a>
                 <ul class="dropdown-menu" role="menu">
                     @if (User.IsInRole("Admin"))
                     {
-                        <li><a href="javascript:void(0);" data-toggle="modal" data-target="#myModal" class="userImage"><i class="fas fa-user-tie pull-right"></i> Hello Admin!</a></li>
                         <li><a href="@Url.Action("Register", "Account")"><i class="fas fa-plus-square pull-right"></i> Manage User</a></li>
                         <li><a href="@Url.Action("CreateRoles", "Account")"><i class="far fa-user-circle pull-right"></i> Manage Roles</a></li>
-                    }
-                    else
-                    {
-                        <li><a href="javascript:void(0);" data-toggle="modal" data-target="#myModal" class="userImage"><i class="fas fa-user-tie pull-right"></i> Hello @ViewData["FirstName"]!</a></li>
-                    }
+                    }                   
                     <li><a href="@Url.Action("Index", "Manage")"><i class="fas fa-cog pull-right"></i> Setting</a></li>
                     <li class="divider"></li>
                     <li><a href="javascript:document.getElementById('logoutForm').submit()"><i class="fa fa-power-off pull-right"></i> Log Out</a></li>
