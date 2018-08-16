@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Shared
+namespace Enums
 {
-    public class Enums
+    public class EnumSet
     {
         public enum ExceptionType
         {

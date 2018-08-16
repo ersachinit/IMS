@@ -24,6 +24,7 @@ using System.Security.Cryptography;
 using System.IO;
 using Shared;
 using AdminWebApp.EntityDataModel;
+using Enums;
 
 namespace AdminWebApp.Controllers
 {
@@ -120,7 +121,7 @@ namespace AdminWebApp.Controllers
             }
         }
         protected void SetUserImage(ApplicationUser userDetail)
-        {           
+        {
             if (userDetail != null)
             {
                 if (userDetail.UserPhoto != null)
@@ -838,6 +839,7 @@ namespace AdminWebApp.Controllers
         // GET: Employee  
         public ActionResult ManageMenu()
         {
+            ViewBag.MenuCount = context.Menus.Count();
             return View();
         }
         /// <summary>  
@@ -849,7 +851,7 @@ namespace AdminWebApp.Controllers
         {
             using (webAppDbEntities Obj = new webAppDbEntities())
             {
-                List<Menu> Emp = Obj.Menus.ToList();
+                List<Menu> Emp = Obj.Menus.ToList();                
                 return Json(Emp, JsonRequestBehavior.AllowGet);
             }
         }
@@ -927,6 +929,7 @@ namespace AdminWebApp.Controllers
                     var menu_ = Obj.Entry(menu);
                     Menu EmpObj = Obj.Menus.Where(x => x.MenuId == menu.MenuId).FirstOrDefault();
                     EmpObj.MenuName = menu.MenuName;
+                    EmpObj.MenuIcon = menu.MenuIcon;
                     EmpObj.Status = menu.Status;
                     Obj.SaveChanges();
                     return "Menu Updated Successfully";

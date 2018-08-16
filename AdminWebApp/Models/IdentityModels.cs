@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Data.Entity;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Enums;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 
@@ -30,7 +31,8 @@ namespace AdminWebApp.Models
         [Key]
         public int MenuId { get; set; }
         public string MenuName { get; set; }
-        public int Status { get; set; }
+        public string MenuIcon { get; set; }
+        public EnumSet.Status Status { get; set; }       
     }
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
@@ -38,6 +40,7 @@ namespace AdminWebApp.Models
             : base("DefaultConnection", throwIfV1Schema: false)
         {
         }
+        public DbSet<Menus> Menus { get; set; }
         public static ApplicationDbContext Create()
         {
             return new ApplicationDbContext();

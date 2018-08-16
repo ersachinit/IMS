@@ -3,6 +3,7 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.Owin;
 using Owin;
+using System;
 
 [assembly: OwinStartupAttribute(typeof(AdminWebApp.Startup))]
 namespace AdminWebApp
@@ -12,7 +13,7 @@ namespace AdminWebApp
         public void Configuration(IAppBuilder app)
         {
             ConfigureAuth(app);
-            //createRolesandUsers();
+            createRolesandUsers();
         }
         //In this method we will create default User roles and Admin user for login
         private void createRolesandUsers()
@@ -35,8 +36,13 @@ namespace AdminWebApp
                 //Here we create a Admin super user who will maintain the website                   
 
                 var user = new ApplicationUser();
-                user.UserName = "sachin.1432k9@gmail.com";
-                user.Email = "sachin.1432k9@gmail.com";
+                user.UserName = "sachintripathi@inestweb.com";
+                user.Email = "sachintripathi@inestweb.com";
+                user.FirstName = "Sachin";
+                user.LastName = "Tripathi";
+                user.PhoneNumber = "7905442801";
+                user.EmailConfirmed = true;
+                user.DOB = Convert.ToDateTime("07/06/1992");
 
                 string userPWD = "Test@123";
 

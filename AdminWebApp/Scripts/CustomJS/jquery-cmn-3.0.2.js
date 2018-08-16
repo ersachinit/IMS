@@ -152,13 +152,13 @@ function GetUserDetailText(UserId) {
         success: function (res) {
             if (res !== false) {
                 $('#UserId').text(res.UserId);
-                $('.FirstName').text(res.FirstName);
-                $('#LastName').text(res.LastName);
-                $('#FullName').text(res.FullName);
-                $('#Email').text(res.Email);
-                $('#PhoneNo').text(res.PhoneNo);
-                $("#UserRoles").text(res.UserRoles);
-                $("#DOB").text($.datepicker.formatDate('dd MM yy', new Date(res.DOB)));
+                $('.userFirstName').text(res.FirstName);
+                $('#userLastName').text(res.LastName);
+                $('#userFullName').text(res.FullName);
+                $('#userEmail').text(res.Email);
+                $('#userPhoneNo').text(res.PhoneNo);
+                $("#userUserRoles").text(res.UserRoles);
+                $("#userDOB").text($.datepicker.formatDate('dd MM yy', new Date(res.DOB)));
             }
             else {
                 toastrMsg("Unable to get the user!", "error");
