@@ -874,8 +874,8 @@ namespace AdminWebApp.Controllers
         /// <param name="Employe"></param>  
         /// <returns></returns>  
         public string Insert_Employee(Menu menu)
-        {
-            if (menu != null)
+        {           
+            if (menu != null && ModelState.IsValid)
             {
                 using (webAppDbEntities Obj = new webAppDbEntities())
                 {
@@ -922,7 +922,7 @@ namespace AdminWebApp.Controllers
         /// <returns></returns>  
         public string Update_Employee(Menu menu)
         {
-            if (menu != null)
+            if (menu != null && ModelState.IsValid)
             {
                 using (webAppDbEntities Obj = new webAppDbEntities())
                 {
@@ -937,7 +937,7 @@ namespace AdminWebApp.Controllers
             }
             else
             {
-                return "Employee Not Updated! Try Again";
+                return "Menu Not Updated! Try Again";
             }
         }
         #endregion
