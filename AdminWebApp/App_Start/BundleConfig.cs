@@ -11,6 +11,7 @@ namespace AdminWebApp
             bundles.Add(new ScriptBundle("~/bundles/jquery").Include(
                         "~/Scripts/jquery-{version}.js",
                          "~/Scripts/jquery-ui-{version}.js",
+                         "~/Scripts/angular.js",
                          "~/Scripts/CustomJS/jquery-cmn-3.0.2.js"));
 
             bundles.Add(new ScriptBundle("~/bundles/jqueryval").Include(

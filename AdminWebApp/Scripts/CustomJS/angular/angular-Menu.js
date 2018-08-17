@@ -1,19 +1,4 @@
-﻿function toastrMsg(msg, method) {
-    toastr.options = {
-        "positionClass": "toast-bottom-right",
-        "preventDuplicates": true,
-        "showDuration": "300",
-        "hideDuration": "1000",
-        "timeOut": "5000",
-        "extendedTimeOut": "1000",
-        "showEasing": "swing",
-        "hideEasing": "linear",
-        "showMethod": "fadeIn",
-        "hideMethod": "fadeOut"
-    };
-    return toastr[method](msg);
-}
-var app = angular.module("myApp", []);
+﻿var app = angular.module("myApp", []);
 app.controller("myCtrl", function ($scope, $http) {
     $scope.Status = true;
     $scope.Test = "Active";
@@ -74,7 +59,7 @@ app.controller("myCtrl", function ($scope, $http) {
             method: "get",
             url: "https://localhost:44369/Account/Get_AllEmployee"
         }).then(function (response) {           
-            $scope.menus = response.data;
+            $scope.menus = response.data;           
         }, function () {
             toastrMsg("Error Occur", 'error')
         })
