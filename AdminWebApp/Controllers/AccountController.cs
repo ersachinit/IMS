@@ -25,6 +25,7 @@ using System.IO;
 using Shared;
 using AdminWebApp.EntityDataModel;
 using Enums;
+using SMS;
 
 namespace AdminWebApp.Controllers
 {
@@ -36,6 +37,7 @@ namespace AdminWebApp.Controllers
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
         EmailTemplate email = new EmailTemplate();
+        SMSUtility SMS = new SMSUtility();
 
 
         public AccountController()
@@ -348,6 +350,8 @@ namespace AdminWebApp.Controllers
                 return View("Error");
             }
             var result = await UserManager.ConfirmEmailAsync(userId, code);
+            //SMS.SendbyTextLocal("+917905442801", "Hi Sachin This is only a text message by TextLocal.");
+            SMS.SendByTwilioWhatsApp("+919918262976", "Hi Sachin This is only a text message by Whatsapp.");
             return View(result.Succeeded ? "ConfirmEmail" : "Error");
         }
 
@@ -721,25 +725,25 @@ namespace AdminWebApp.Controllers
             }
         }
 
-        public Boolean IsAdminUser()
-        {
-            if (User.Identity.IsAuthenticated)
-            {
-                var user = User.Identity;
-                ApplicationDbContext context = new ApplicationDbContext();
-                var UserManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(context));
-                var s = UserManager.GetRoles(user.GetUserId());
-                if (s[0].ToString() == "Admin")
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-            return false;
-        }
+        //public Boolean IsAdminUser()
+        //{
+        //    if (User.Identity.IsAuthenticated)
+        //    {
+        //        var user = User.Identity;
+        //        ApplicationDbContext context = new ApplicationDbContext();
+        //        var UserManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(context));
+        //        var s = UserManager.GetRoles(user.GetUserId());
+        //        if (s[0].ToString() == "Admin")
+        //        {
+        //            return true;
+        //        }
+        //        else
+        //        {
+        //            return false;
+        //        }
+        //    }
+        //    return false;
+        //}
 
         // GET: Role
         [HttpGet]
@@ -748,14 +752,14 @@ namespace AdminWebApp.Controllers
         {
             if (User.Identity.IsAuthenticated)
             {
-                if (!IsAdminUser())
+                if (!User.IsInRole("Admin"))
                 {
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("AuthorizationError", "Account");
                 }
             }
             else
             {
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("Login", "Account");
             }
             context = new ApplicationDbContext();
             var Roles = context.Roles.ToList();
@@ -764,7 +768,7 @@ namespace AdminWebApp.Controllers
         }
         //Post CreateRole
         [HttpPost]
-        //[ValidateAntiForgeryToken]
+        [ValidateAntiForgeryToken]
         public ActionResult CreateRoles(CreateRoleModel model)
         {
             context = new ApplicationDbContext();
@@ -839,6 +843,17 @@ namespace AdminWebApp.Controllers
         // GET: Employee  
         public ActionResult ManageMenu()
         {
+            if (User.Identity.IsAuthenticated)
+            {
+                if (!User.IsInRole("Admin"))
+                {
+                    return RedirectToAction("AuthorizationError", "Account");
+                }
+            }
+            else
+            {
+                return RedirectToAction("Login", "Account");
+            }
             ViewBag.MenuCount = context.Menus.Count();
             return View();
         }

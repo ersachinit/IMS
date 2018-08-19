@@ -11,7 +11,6 @@ using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin;
 using Microsoft.Owin.Security;
 using AdminWebApp.Models;
-using Twilio;
 using System.Diagnostics;
 using System.Net.Mail;
 using System.Net.Mime;
@@ -55,46 +54,16 @@ namespace AdminWebApp
             {
                 return Task.FromResult(0);
             }
-
-
         }
     }
-    public static class Keys
-    {
-        public static string SMSAccountIdentification = "CKVAMKVW3EC0";
-        public static string SMSAccountPassword = "uWkFvEVSzHyZO31lwrgnPip5";
-        public static string SMSAccountFrom = "+15555551234";
-    }
+    
     public class SmsService : IIdentityMessageService
     {
         public Task SendAsync(IdentityMessage message)
         {
-            // Plug in your SMS service here to send a text message.
-            // Twilio Begin
-            var Twilio = new TwilioRestClient(
-              System.Configuration.ConfigurationManager.AppSettings["SMSAccountIdentification"],
-              System.Configuration.ConfigurationManager.AppSettings["SMSAccountPassword"]);
-            var result = Twilio.SendMessage(
-              System.Configuration.ConfigurationManager.AppSettings["SMSAccountFrom"],
-              message.Destination, message.Body
-            );
+            // Plug in your SMS service here to send a text message.           
             // Status is one of Queued, Sending, Sent, Failed or null if the number is not valid
-            Trace.TraceInformation(result.Status);
-            // Twilio doesn't currently have an async API, so return success.
-            return Task.FromResult(0);
-            // Twilio End
-
-            // ASPSMS Begin 
-            //var soapSms = new AdminWebApp.ASPSMSX2.ASPSMSX2SoapClient("ASPSMSX2Soap");
-            //soapSms.SendSimpleTextSMS(
-            //  Keys.SMSAccountIdentification,
-            //  Keys.SMSAccountPassword,
-            //  message.Destination,
-            //  Keys.SMSAccountFrom,
-            //  message.Body);
-            //soapSms.Close();
-            //return Task.FromResult(0);
-            // ASPSMS End
+            return Task.FromResult(0);            
         }
     }
 

@@ -25,7 +25,7 @@ app.controller("myCtrl", function ($scope, $http) {
                 datatype: "json",
                 data: JSON.stringify($scope.Menu)
             }).then(function (response) {
-                toastrMsg(response.data,'success')
+                toastrMsg(response.data, 'success')
                 $scope.GetAllData();
                 $scope.MenuName = "";
                 $scope.MenuIcon = "";
@@ -58,8 +58,25 @@ app.controller("myCtrl", function ($scope, $http) {
         $http({
             method: "get",
             url: "https://localhost:44369/Account/Get_AllEmployee"
-        }).then(function (response) {           
-            $scope.menus = response.data;           
+        }).then(function (response) {
+            $scope.menus = response.data;
+            //$(document).ready(function () {
+            //    var table = $('#tblMenu').DataTable();
+            //    table
+            //        .clear()
+            //        .draw();
+            //    var count = 1;
+            //    $.each(response.data, function (key, item) {
+            //        table.row.add([
+            //            count,
+            //            item.MenuName,
+            //            item.MenuIcon,
+            //            item.Status,
+            //            "<a href='javascript:void(0)' ng-click='UpdateEmp(" + item.MenuId + ")'><i class='far fa-edit fa-2x'></i></a><span style='font-size:xx-large'> | </span><a href='javascript:void(0)' ng-click='DeleteEmp(" + item.MenuId + ")'><i class='fas fa-trash fa-2x'></i></a>",
+            //        ]).draw(false);
+            //        count++;
+            //    });
+            //});
         }, function () {
             toastrMsg("Error Occur", 'error')
         })
@@ -76,6 +93,7 @@ app.controller("myCtrl", function ($scope, $http) {
         })
     };
     $scope.UpdateEmp = function (Emp) {
+
         document.getElementById("MenuId_").value = Emp.MenuId;
         $scope.MenuName = Emp.MenuName;
         $scope.MenuIcon = Emp.MenuIcon;

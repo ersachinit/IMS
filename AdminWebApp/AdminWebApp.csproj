@@ -137,9 +137,6 @@
       <Private>True</Private>
       <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
     </Reference>
-    <Reference Include="Twilio.Api, Version=3.4.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Twilio.4.7.2\lib\3.5\Twilio.Api.dll</HintPath>
-    </Reference>
     <Reference Include="WebGrease, Version=1.6.5135.21930, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\WebGrease.1.6.0\lib\WebGrease.dll</HintPath>
     </Reference>
@@ -270,9 +267,9 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201808141213445_AddMenuTable.cs" />
-    <Compile Include="Migrations\201808141213445_AddMenuTable.Designer.cs">
-      <DependentUpon>201808141213445_AddMenuTable.cs</DependentUpon>
+    <Compile Include="Migrations\201808181241271_InitialDbWIthMenu.cs" />
+    <Compile Include="Migrations\201808181241271_InitialDbWIthMenu.Designer.cs">
+      <DependentUpon>201808181241271_InitialDbWIthMenu.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -3911,13 +3908,15 @@
     <Content Include="Scripts\angular.min.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
-    <Content Include="Scripts\CustomJS\angular-Menu.js" />
+    <Content Include="Scripts\CustomJS\angular\ang-SubMenu.js" />
+    <Content Include="Scripts\CustomJS\angular\angular-Menu.js" />
     <Content Include="Scripts\CustomJS\jquery-cmn-3.0.2.js" />
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
     <Content Include="fonts\glyphicons-halflings-regular.ttf" />
     <Content Include="fonts\glyphicons-halflings-regular.eot" />
     <Content Include="Content\bootstrap.css.map" />
     <Content Include="Content\bootstrap-theme.css.map" />
+    <Content Include="Scripts\angular.min.js.map" />
     <EntityDeploy Include="EntityDataModel\Model1.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>Model1.Designer.cs</LastGenOutput>
@@ -3925,7 +3924,6 @@
     <Content Include="EntityDataModel\Model1.edmx.diagram">
       <DependentUpon>Model1.edmx</DependentUpon>
     </Content>
-    <Content Include="Scripts\angular.min.js.map" />
     <None Include="Scripts\jquery-3.0.0-vsdoc.js" />
     <Content Include="Scripts\jquery-3.0.0.js" />
     <Content Include="Scripts\jquery-3.0.0.min.js" />
@@ -4001,6 +3999,10 @@
       <Project>{209029cc-0998-45b7-9652-8fe7babba57d}</Project>
       <Name>BusinessAccessLayer</Name>
     </ProjectReference>
+    <ProjectReference Include="..\BusinessDataModel\BusinessDataModel.csproj">
+      <Project>{EA3E2F07-5CFC-44FF-BECB-C971DEC714FD}</Project>
+      <Name>BusinessDataModel</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Shared\Shared.csproj">
       <Project>{10a743c1-6988-4195-8ba9-b1866ca11bd1}</Project>
       <Name>Shared</Name>
@@ -4017,8 +4019,8 @@
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201808141213445_AddMenuTable.resx">
-      <DependentUpon>201808141213445_AddMenuTable.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201808181241271_InitialDbWIthMenu.resx">
+      <DependentUpon>201808181241271_InitialDbWIthMenu.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

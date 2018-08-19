@@ -4,9 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BusinessDataModel
+namespace Message
 {
-    public class Class1
+    public class SMSMessage
     {
+        public static string OnLogin = "Login Successful!";
     }
 }

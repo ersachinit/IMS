@@ -51,7 +51,7 @@
                 @Html.ActionLink("Application Name", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
             </div>
             <div class="navbar-collapse collapse">
-                @if ((System.Web.HttpContext.Current.User != null) && System.Web.HttpContext.Current.User.Identity.IsAuthenticated)
+                @if ((HttpContext.Current.User != null) && HttpContext.Current.User.Identity.IsAuthenticated)
                 {
                     <ul class="nav navbar-nav">
                         <li>@Html.ActionLink("Dashboard", "Dashboard", "Home")</li>
