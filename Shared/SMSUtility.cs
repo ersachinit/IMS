@@ -17,14 +17,14 @@ namespace SMS
     public class SMSUtility
     {
         #region Variable Section
-        private static string ApiKey = WebConfigurationManager.AppSettings["ApiKey"];
-        private static string Sender = WebConfigurationManager.AppSettings["Sender"];
-        private static string SMSService = WebConfigurationManager.AppSettings["SMSService"];
-        private static string WhatsappFrom = WebConfigurationManager.AppSettings["WhatsappFrom"];
-        private static string WhatsappPassword = WebConfigurationManager.AppSettings["WhatsappPassword"];
-        private static string WhatsappNickName = WebConfigurationManager.AppSettings["WhatsappNickName"];
-        private static string TwilioSID = WebConfigurationManager.AppSettings["TwilioSID"];
-        private static string TwilioToken = WebConfigurationManager.AppSettings["TwilioToken"];
+        readonly private static string ApiKey = WebConfigurationManager.AppSettings["ApiKey"];
+        readonly private static string Sender = WebConfigurationManager.AppSettings["Sender"];
+        readonly private static string SMSService = WebConfigurationManager.AppSettings["SMSService"];
+        readonly private static string WhatsappFrom = WebConfigurationManager.AppSettings["WhatsappFrom"];
+        readonly private static string WhatsappPassword = WebConfigurationManager.AppSettings["WhatsappPassword"];
+        readonly private static string WhatsappNickName = WebConfigurationManager.AppSettings["WhatsappNickName"];
+        readonly private static string TwilioSID = WebConfigurationManager.AppSettings["TwilioSID"];
+        readonly private static string TwilioToken = WebConfigurationManager.AppSettings["TwilioToken"];
         #endregion
         Result result = null;
 

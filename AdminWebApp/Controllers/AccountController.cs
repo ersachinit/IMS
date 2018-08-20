@@ -1,31 +1,22 @@
-﻿using System;
-using System.Globalization;
+﻿using AdminWebApp.EntityDataModel;
+using AdminWebApp.Models;
+using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.EntityFramework;
+using Microsoft.AspNet.Identity.Owin;
+using Microsoft.Owin.Security;
+using Shared;
+using SMS;
+using System;
+using System.Collections.Generic;
+using System.Data.Entity;
+using System.IO;
 using System.Linq;
-using System.Security.Claims;
+using System.Net;
+using System.Security.Cryptography;
+using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
-using Microsoft.AspNet.Identity;
-using Microsoft.AspNet.Identity.Owin;
-using Microsoft.Owin.Security;
-using AdminWebApp.Models;
-using Microsoft.AspNet.Identity.EntityFramework;
-using System.Net;
-using System.Web.Services;
-using System.Configuration;
-using System.Web.Configuration;
-using SendGrid.Helpers.Mail;
-using System.Net.Mail;
-using System.Net.Mime;
-using System.Text;
-using System.Data.Entity;
-using System.Collections.Generic;
-using System.Security.Cryptography;
-using System.IO;
-using Shared;
-using AdminWebApp.EntityDataModel;
-using Enums;
-using SMS;
 
 namespace AdminWebApp.Controllers
 {
@@ -36,8 +27,8 @@ namespace AdminWebApp.Controllers
         ApplicationDbContext context;
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
-        EmailTemplate email = new EmailTemplate();
-        SMSUtility SMS = new SMSUtility();
+        readonly EmailTemplate email = new EmailTemplate();
+        readonly SMSUtility SMS = new SMSUtility();
 
 
         public AccountController()
@@ -111,6 +102,7 @@ namespace AdminWebApp.Controllers
                         return View("ConfirmYourEmail");
                     }
                     SetUserImage(userDetail);
+                    SMS.SendByTwilioWhatsApp(userDetail.PhoneNumber, "Welcome " + userDetail.FirstName + ", You have succesfully logged in!");
                     return RedirectToAction("Dashboard", "Home");//RedirectToLocal(returnUrl);
                 case SignInStatus.LockedOut:
                     return View("Lockout");
@@ -351,7 +343,7 @@ namespace AdminWebApp.Controllers
             }
             var result = await UserManager.ConfirmEmailAsync(userId, code);
             //SMS.SendbyTextLocal("+917905442801", "Hi Sachin This is only a text message by TextLocal.");
-            SMS.SendByTwilioWhatsApp("+919918262976", "Hi Sachin This is only a text message by Whatsapp.");
+            SMS.SendByTwilioWhatsApp("+917905442801", "Hi Sachin, Your email has been confirmed.");
             return View(result.Succeeded ? "ConfirmEmail" : "Error");
         }
 
@@ -866,7 +858,7 @@ namespace AdminWebApp.Controllers
         {
             using (webAppDbEntities Obj = new webAppDbEntities())
             {
-                List<Menu> Emp = Obj.Menus.ToList();                
+                List<Menu> Emp = Obj.Menus.ToList();
                 return Json(Emp, JsonRequestBehavior.AllowGet);
             }
         }
@@ -889,7 +881,7 @@ namespace AdminWebApp.Controllers
         /// <param name="Employe"></param>  
         /// <returns></returns>  
         public string Insert_Employee(Menu menu)
-        {           
+        {
             if (menu != null && ModelState.IsValid)
             {
                 using (webAppDbEntities Obj = new webAppDbEntities())

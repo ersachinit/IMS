@@ -58,11 +58,9 @@
     <Reference Include="System.Xml" />
     <Reference Include="Twilio, Version=5.16.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Twilio.5.16.0\lib\net451\Twilio.dll</HintPath>
-      <Private>True</Private>
     </Reference>
     <Reference Include="WhatsAppApi, Version=1.0.2.1, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Whatsapp.NET.1.2.2\lib\WhatsAppApi.dll</HintPath>
-      <Private>True</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>

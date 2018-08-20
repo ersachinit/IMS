@@ -3,10 +3,22 @@ namespace AdminWebApp.Migrations
     using System;
     using System.Data.Entity.Migrations;
     
-    public partial class AddMenuTable : DbMigration
+    public partial class IntialDb : DbMigration
     {
         public override void Up()
         {
+            CreateTable(
+                "dbo.Menus",
+                c => new
+                    {
+                        MenuId = c.Int(nullable: false, identity: true),
+                        MenuName = c.String(maxLength: 100),
+                        MenuIcon = c.String(maxLength: 100),
+                        Status = c.Byte(nullable: false),
+                    })
+                .PrimaryKey(t => t.MenuId)
+                .Index(t => t.MenuName, unique: true, name: "MenuNameIndex");
+            
             CreateTable(
                 "dbo.Role",
                 c => new
@@ -79,19 +91,6 @@ namespace AdminWebApp.Migrations
                 .ForeignKey("dbo.User", t => t.UserId, cascadeDelete: true)
                 .Index(t => t.UserId);
             
-            CreateTable(
-                "dbo.Menus",
-                c => new
-                    {
-                        MenuId = c.Int(nullable: false, identity: true),
-                        MenuName = c.String(),
-                        Status = c.Int(nullable: false),
-                        ApplicationUser_Id = c.String(maxLength: 128),
-                    })
-                .PrimaryKey(t => t.MenuId)
-                .ForeignKey("dbo.User", t => t.ApplicationUser_Id)
-                .Index(t => t.ApplicationUser_Id);
-            
         }
         
         public override void Down()
@@ -101,19 +100,19 @@ namespace AdminWebApp.Migrations
             DropForeignKey("dbo.UserLogin", "UserId", "dbo.User");
             DropForeignKey("dbo.UserClaim", "UserId", "dbo.User");
             DropForeignKey("dbo.UserRole", "RoleId", "dbo.Role");
-            DropIndex("dbo.Menus", new[] { "ApplicationUser_Id" });
             DropIndex("dbo.UserLogin", new[] { "UserId" });
             DropIndex("dbo.UserClaim", new[] { "UserId" });
             DropIndex("dbo.User", "UserNameIndex");
             DropIndex("dbo.UserRole", new[] { "RoleId" });
             DropIndex("dbo.UserRole", new[] { "UserId" });
             DropIndex("dbo.Role", "RoleNameIndex");
-            DropTable("dbo.Menus");
+            DropIndex("dbo.Menus", new[] { "ApplicationUser_Id" });
             DropTable("dbo.UserLogin");
             DropTable("dbo.UserClaim");
             DropTable("dbo.User");
             DropTable("dbo.UserRole");
             DropTable("dbo.Role");
+            DropTable("dbo.Menus");
         }
     }
 }

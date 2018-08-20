@@ -4,7 +4,7 @@
 }
 <script src="~/Scripts/CustomJS/angular/angular-Menu.js"></script>
 <div ng-app="myApp">
-    <div class="panel panel-primary divList" ng-controller="myCtrl" ng-init="GetAllData()">
+    <div class="panel panel-primary divList" ng-controller="myCtrl" ng-init="GetAllData()" id="mainController">
         <div class="panel-heading">
             <h3 class="box-title">
                 <b>Manage Menu</b>
@@ -52,16 +52,15 @@
             <table class="table table-hover table-bordered table-condensed" id="tblMenu">
                 <thead>
                     <tr>
-                        <td><b>S.N</b></td>
-                        <td><b>Menu Name</b></td>
-                        <td><b>Menu Icon</b></td>
-                        <td><b>Status</b></td>
-                        <td><b>Action</b></td>
+                        <th><b>S.N</b></th>
+                        <th><b>Menu Name</b></th>
+                        <th><b>Menu Icon</b></th>
+                        <th><b>Status</b></th>
+                        <th><b>Action</b></th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr ng-repeat="Emp in menus">
-
                         <td>
                             {{$index + 1}}
                         </td>
@@ -88,5 +87,4 @@
         </div>
     </div>
 </div>
-
 @Html.Hidden("MenuId_")

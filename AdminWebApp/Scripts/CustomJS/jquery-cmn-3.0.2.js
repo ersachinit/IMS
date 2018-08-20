@@ -12,6 +12,7 @@
     $(document).ajaxComplete(function () {
         $('.ajax-loader').css("visibility", "hidden");
     });
+    $('[data-toggle="tooltip"]').tooltip();
 });
 
 function GetDatatableFor(id) {

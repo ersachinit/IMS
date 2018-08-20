@@ -13,10 +13,10 @@ namespace AdminWebApp
         public void Configuration(IAppBuilder app)
         {
             ConfigureAuth(app);
-            //createRolesandUsers();
+            CreateRolesandUsers();
         }
         //In this method we will create default User roles and Admin user for login
-        private void createRolesandUsers()
+        private void CreateRolesandUsers()
         {
             ApplicationDbContext context = new ApplicationDbContext();
 
@@ -29,38 +29,35 @@ namespace AdminWebApp
             {
 
                 // first we create Admin rool    
-                var role = new IdentityRole();
-                role.Name = "Admin";
+                var role = new IdentityRole("Admin");
                 roleManager.Create(role);
 
                 //Here we create a Admin super user who will maintain the website                   
 
-                var user = new ApplicationUser();
-                user.UserName = "sachintripathi@inestweb.com";
-                user.Email = "sachintripathi@inestweb.com";
-                user.FirstName = "Sachin";
-                user.LastName = "Tripathi";
-                user.PhoneNumber = "7905442801";
-                user.EmailConfirmed = true;
-                user.DOB = Convert.ToDateTime("07/06/1992");
-
+                var user = new ApplicationUser
+                {
+                    UserName = "sachintripathi@inestweb.com",
+                    Email = "sachintripathi@inestweb.com",
+                    FirstName = "Sachin",
+                    LastName = "Tripathi",
+                    PhoneNumber = "7905442801",
+                    EmailConfirmed = true,
+                    DOB = Convert.ToDateTime("07/06/1992")
+                };
                 string userPWD = "Test@123";
-
                 var chkUser = UserManager.Create(user, userPWD);
 
                 //Add default User to Role Admin    
                 if (chkUser.Succeeded)
                 {
                     var result1 = UserManager.AddToRole(user.Id, "Admin");
-
                 }
             }
 
             // creating Creating Manager role     
             if (!roleManager.RoleExists("Manager"))
             {
-                var role = new IdentityRole();
-                role.Name = "Manager";
+                var role = new IdentityRole("Manager");
                 roleManager.Create(role);
 
             }
@@ -68,8 +65,7 @@ namespace AdminWebApp
             // creating Creating Employee role     
             if (!roleManager.RoleExists("Employee"))
             {
-                var role = new IdentityRole();
-                role.Name = "Employee";
+                var role = new IdentityRole("Employee");
                 roleManager.Create(role);
 
             }

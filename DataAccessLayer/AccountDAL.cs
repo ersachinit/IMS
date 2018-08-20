@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace DataAccessLayer
 {
-    public class AcountDAL
+    public class AccountDAL
     {
-        SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString);
+        readonly SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString);
         
     }
 }

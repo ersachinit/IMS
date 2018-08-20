@@ -267,9 +267,9 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201808181241271_InitialDbWIthMenu.cs" />
-    <Compile Include="Migrations\201808181241271_InitialDbWIthMenu.Designer.cs">
-      <DependentUpon>201808181241271_InitialDbWIthMenu.cs</DependentUpon>
+    <Compile Include="Migrations\201808200619260_IntialDb.cs" />
+    <Compile Include="Migrations\201808200619260_IntialDb.Designer.cs">
+      <DependentUpon>201808200619260_IntialDb.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -3660,6 +3660,7 @@
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\Site-cmn.css" />
     <Content Include="Content\themes\base\accordion.css" />
     <Content Include="Content\themes\base\all.css" />
     <Content Include="Content\themes\base\autocomplete.css" />
@@ -4019,8 +4020,8 @@
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201808181241271_InitialDbWIthMenu.resx">
-      <DependentUpon>201808181241271_InitialDbWIthMenu.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201808200619260_IntialDb.resx">
+      <DependentUpon>201808200619260_IntialDb.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
