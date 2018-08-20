@@ -30,6 +30,8 @@ app.controller("myCtrl", function ($scope, $http) {
                 $scope.MenuName = "";
                 $scope.MenuIcon = "";
                 $scope.Status = true;
+                $scope.Test = "Active";
+
             })
         } else {
             $scope.Menu = {};
@@ -48,6 +50,7 @@ app.controller("myCtrl", function ($scope, $http) {
                 $scope.MenuName = "";
                 $scope.MenuIcon = "";
                 $scope.Status = true;
+                $scope.Test = "Active";
                 document.getElementById("btnSave").setAttribute("value", "Submit");
                 document.getElementById("btnSave").style.backgroundColor = "cornflowerblue";
                 document.getElementById("spn").innerHTML = "Add New Menu";
@@ -60,23 +63,23 @@ app.controller("myCtrl", function ($scope, $http) {
             url: "https://localhost:44369/Account/Get_AllEmployee"
         }).then(function (response) {
             $scope.menus = response.data;
-            $(window).on("load", function () {                
-                var table = $('#tblMenu').DataTable();
-                table
-                    .clear()
-                    .draw();
-                var count = 1;
-                $.each(response.data, function (key, item) {
-                    table.row.add([
-                        count,
-                        item.MenuName,
-                        '<i class="' + item.MenuIcon + '"></i>',
-                        item.Status,
-                        "<a href='javascript:void(0)' onclick='CallAng(" + item.MenuId + ")'><i class='far fa-edit fa-2x'></i></a><span style='font-size:xx-large'> | </span><a href='javascript:void(0)' ng-click='DeleteEmp(" + item.MenuId + ")'><i class='fas fa-trash fa-2x'></i></a>",
-                    ]).draw(false);
-                    count++;
-                });
-            });
+            //$(window).on("load", function () {                
+            //    var table = $('#tblMenu').DataTable();
+            //    table
+            //        .clear()
+            //        .draw();
+            //    var count = 1;
+            //    $.each(response.data, function (key, item) {
+            //        table.row.add([
+            //            count,
+            //            item.MenuName,
+            //            '<i class="' + item.MenuIcon + '"></i>',
+            //            item.Status,
+            //            "<a href='javascript:void(0)' onclick='CallAng(" + item.MenuId + ")'><i class='far fa-edit fa-2x'></i></a><span style='font-size:xx-large'> | </span><a href='javascript:void(0)' ng-click='DeleteEmp(" + item.MenuId + ")'><i class='fas fa-trash fa-2x'></i></a>",
+            //        ]).draw(false);
+            //        count++;
+            //    });
+            //});
         }, function () {
             toastrMsg("Error Occur", 'error')
         })
