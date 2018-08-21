@@ -25,14 +25,46 @@ namespace AdminWebApp.Models
             return userIdentity;
         }
         public virtual ICollection<Menus> Menus { get; set; }
+        public virtual ICollection<SubMenus> SubMenus { get; set; }
     }
     public class Menus
     {
         [Key]
         public int MenuId { get; set; }
+
+        [Required]
+        [StringLength(100)]
         public string MenuName { get; set; }
+
+        [Required]
+        [StringLength(100)]
         public string MenuIcon { get; set; }
-        public EnumSet.Status Status { get; set; }       
+
+        [Required]
+        public int DisplayOrder { get; set; }
+
+        public bool Status { get; set; }
+    }
+    public class SubMenus
+    {
+        [Key]
+        public int SubMenuId { get; set; }
+
+        [Required]
+        [StringLength(100)]
+        public string SubMenuName { get; set; }
+
+        [Required]
+        [StringLength(100)]
+        public string SubMenuIcon { get; set; }
+
+        [Required]
+        public int MenuId { get; set; }
+
+        [Required]
+        public int DisplayOrder { get; set; }
+
+        public bool Status { get; set; }
     }
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
@@ -41,6 +73,8 @@ namespace AdminWebApp.Models
         {
         }
         public DbSet<Menus> Menus { get; set; }
+        public DbSet<SubMenus> SubMenus { get; set; }
+
         public static ApplicationDbContext Create()
         {
             return new ApplicationDbContext();

@@ -5,6 +5,7 @@
 
 .dropdown-menu > li > a {
     line-height: 21px;
+    padding: 5px 8px;
 }
 
 .navbar-nav > li > .dropdown-menu {
@@ -42,3 +43,8 @@ li.dropdown:hover > .dropdown-menu {
     display: block;
 }*/
 /* Menu Dropdown on hover End */
+.required:after {
+    content: " *";
+    color: red;
+    font-size:large;
+}

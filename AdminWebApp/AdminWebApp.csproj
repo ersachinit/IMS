@@ -231,45 +231,12 @@
     <Compile Include="Controllers\ApplicationBaseController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
-    <Compile Include="EntityDataModel\C__MigrationHistory.cs">
-      <DependentUpon>Model1.tt</DependentUpon>
-    </Compile>
-    <Compile Include="EntityDataModel\Menu.cs">
-      <DependentUpon>Model1.tt</DependentUpon>
-    </Compile>
-    <Compile Include="EntityDataModel\Model1.Context.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Model1.Context.tt</DependentUpon>
-    </Compile>
-    <Compile Include="EntityDataModel\Model1.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Model1.tt</DependentUpon>
-    </Compile>
-    <Compile Include="EntityDataModel\Model1.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Model1.edmx</DependentUpon>
-    </Compile>
-    <Compile Include="EntityDataModel\Role.cs">
-      <DependentUpon>Model1.tt</DependentUpon>
-    </Compile>
-    <Compile Include="EntityDataModel\User.cs">
-      <DependentUpon>Model1.tt</DependentUpon>
-    </Compile>
-    <Compile Include="EntityDataModel\UserClaim.cs">
-      <DependentUpon>Model1.tt</DependentUpon>
-    </Compile>
-    <Compile Include="EntityDataModel\UserLogin.cs">
-      <DependentUpon>Model1.tt</DependentUpon>
-    </Compile>
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201808200619260_IntialDb.cs" />
-    <Compile Include="Migrations\201808200619260_IntialDb.Designer.cs">
-      <DependentUpon>201808200619260_IntialDb.cs</DependentUpon>
+    <Compile Include="Migrations\201808211418238_InitialDbWithSubMenu.cs" />
+    <Compile Include="Migrations\201808211418238_InitialDbWithSubMenu.Designer.cs">
+      <DependentUpon>201808211418238_InitialDbWithSubMenu.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -3689,16 +3656,6 @@
     <Content Include="Content\themes\base\tabs.css" />
     <Content Include="Content\themes\base\theme.css" />
     <Content Include="Content\themes\base\tooltip.css" />
-    <Content Include="EntityDataModel\Model1.Context.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>Model1.edmx</DependentUpon>
-      <LastGenOutput>Model1.Context.cs</LastGenOutput>
-    </Content>
-    <Content Include="EntityDataModel\Model1.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>Model1.edmx</DependentUpon>
-      <LastGenOutput>Model1.cs</LastGenOutput>
-    </Content>
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
@@ -3910,7 +3867,7 @@
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Scripts\CustomJS\angular\ang-SubMenu.js" />
-    <Content Include="Scripts\CustomJS\angular\angular-Menu.js" />
+    <Content Include="Scripts\CustomJS\angular\ang-Menu.js" />
     <Content Include="Scripts\CustomJS\jquery-cmn-3.0.2.js" />
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
     <Content Include="fonts\glyphicons-halflings-regular.ttf" />
@@ -3918,13 +3875,6 @@
     <Content Include="Content\bootstrap.css.map" />
     <Content Include="Content\bootstrap-theme.css.map" />
     <Content Include="Scripts\angular.min.js.map" />
-    <EntityDeploy Include="EntityDataModel\Model1.edmx">
-      <Generator>EntityModelCodeGenerator</Generator>
-      <LastGenOutput>Model1.Designer.cs</LastGenOutput>
-    </EntityDeploy>
-    <Content Include="EntityDataModel\Model1.edmx.diagram">
-      <DependentUpon>Model1.edmx</DependentUpon>
-    </Content>
     <None Include="Scripts\jquery-3.0.0-vsdoc.js" />
     <Content Include="Scripts\jquery-3.0.0.js" />
     <Content Include="Scripts\jquery-3.0.0.min.js" />
@@ -3988,9 +3938,11 @@
     <Content Include="Views\Account\ConfirmYourEmail.cshtml" />
     <Content Include="Views\Partials\UserProfile.cshtml" />
     <Content Include="Views\Account\ManageMenu.cshtml" />
+    <Content Include="Views\Account\ManageSubMenu.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Scripts\CustomJS\jQuery\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
@@ -4020,8 +3972,8 @@
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201808200619260_IntialDb.resx">
-      <DependentUpon>201808200619260_IntialDb.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201808211418238_InitialDbWithSubMenu.resx">
+      <DependentUpon>201808211418238_InitialDbWithSubMenu.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

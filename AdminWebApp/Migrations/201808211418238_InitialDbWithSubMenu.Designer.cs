@@ -7,13 +7,13 @@ namespace AdminWebApp.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.1.3-40302")]
-    public sealed partial class IntialDb : IMigrationMetadata
+    public sealed partial class InitialDbWithSubMenu : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(IntialDb));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(InitialDbWithSubMenu));
         
         string IMigrationMetadata.Id
         {
-            get { return "201808200619260_IntialDb"; }
+            get { return "201808211418238_InitialDbWithSubMenu"; }
         }
         
         string IMigrationMetadata.Source

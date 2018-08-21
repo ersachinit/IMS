@@ -1,0 +1,109 @@
+﻿
+@{
+    ViewBag.Title = "ManageSubMenu";
+}
+<script src="~/Scripts/CustomJS/angular/ang-subMenu.js"></script>
+<div ng-app="myApp">
+    <div class="panel panel-primary divList" ng-controller="ManageSubMenu" ng-init="GetAllSubMenu()">
+        <div class="panel-heading">
+            <h3 class="box-title">
+                <b>Manage SubMenu</b>
+            </h3>
+            <h5>
+                <span id="spn">Add New SubMenu</span>
+            </h5>
+        </div>
+        <!-- /.box-header -->
+        <div class="panel-body">
+            <div class="container">
+                <div class="col-lg-12 well">
+                    <div class="row">
+                        @Html.ValidationSummary("", new { @class = "text-danger" })
+                        <form>
+                            <div class="col-sm-12">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <label class='required'>Menu Name:</label>                                       
+                                        <select class="form-control" ng-model="MenuId" ng-options="menu.MenuId as menu.MenuName for menu in MenuList track by menu.MenuId">
+                                            <option value=""> Select </option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label class='required'>SubMenu Name:</label>
+                                        <input type="text" ng-model="SubMenuName" placeholder="SubMenu Name" class="form-control">
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label class='required'>SubMenu Icon:</label>
+                                        <input type="text" class="form-control" placeholder="SubMenu Icon" ng-model="SubMenuIcon">
+                                        <span style="color:gray">SubMenu Icon Sample:</span><br />
+                                        <span style="color:gray">Ex. -@{string abc = "<i class='fab fa-example'></i>";} @abc</span><br />
+                                        <span style="color:gray">Enter only class, which is - @Html.Raw("fab fa-example")</span>
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label class='required'>Display Order:</label><br />
+                                        <input type="text" ng-model="DisplayOrder" placeholder="Display Order" required class="form-control">
+                                    </div>
+                                    <div class="col-md-1">
+                                        <label>Status:</label><br />
+                                        <input id="chk1" type="checkbox" ng-change="GetStatus()" ng-model="Status"><br />{{ Test }}
+                                    </div>
+                                </div>                               
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <input type="button" id="btnSave" class="btn btn-primary" value="Submit" ng-click="InsertSubMenu()" />
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <hr />
+            <table class="table table-hover table-bordered table-condensed" id="tblMenu">
+                <thead>
+                    <tr>
+                        <th><b>S.N</b></th>
+                        <th><b>Menu Name</b></th>
+                        <th><b>SubMenu Name</b></th>
+                        <th><b>SubMenu Icon</b></th>
+                        <th><b>Display Order</b></th>
+                        <th><b>Status</b></th>
+                        <th><b>Action</b></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="submenu in subMenus">
+                        <td>
+                            {{$index + 1}}
+                        </td>
+                        <td>
+                            {{submenu.MenuName}}
+                        </td>
+                        <td>
+                            {{submenu.SubMenuName}}
+                        </td>
+                        <td>
+                            <i class="{{submenu.SubMenuIcon}}"></i>
+                        </td>
+                        <td>
+                            {{submenu.DisplayOrder}}
+                        </td>
+                        <td>
+                            {{submenu.Status}}
+                        </td>
+                        <td>
+                            <a href="javascript:void(0)" ng-click="UpdateSubMenu(submenu)"><i class="far fa-edit fa-2x"></i></a><span style="font-size:xx-large"> | </span>
+                            <a href="javascript:void(0)" ng-click="DeleteSubMenu(submenu)"><i class="fas fa-trash fa-2x"></i></a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="panel-footer">
+            <p class="box-title"><b>Total Users till @String.Format("{0 : dddd, MMMM d, yyyy}", DateTime.Now)  : </b><span class="label label-primary">@ViewBag.SubMenuCount</span></p>
+        </div>
+    </div>
+</div>
+
+@Html.Hidden("SubMenuId_")

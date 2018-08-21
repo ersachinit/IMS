@@ -3,7 +3,7 @@ namespace AdminWebApp.Migrations
     using System;
     using System.Data.Entity.Migrations;
     
-    public partial class IntialDb : DbMigration
+    public partial class InitialDbWithSubMenu : DbMigration
     {
         public override void Up()
         {
@@ -12,13 +12,32 @@ namespace AdminWebApp.Migrations
                 c => new
                     {
                         MenuId = c.Int(nullable: false, identity: true),
-                        MenuName = c.String(maxLength: 100),
-                        MenuIcon = c.String(maxLength: 100),
-                        Status = c.Byte(nullable: false),
+                        MenuName = c.String(nullable: false, maxLength: 100),
+                        MenuIcon = c.String(nullable: false, maxLength: 100),
+                        DisplayOrder = c.Int(nullable: false),
+                        Status = c.Boolean(nullable: false),
+                        ApplicationUser_Id = c.String(maxLength: 128),
                     })
                 .PrimaryKey(t => t.MenuId)
-                .Index(t => t.MenuName, unique: true, name: "MenuNameIndex");
-            
+                .ForeignKey("dbo.User", t => t.ApplicationUser_Id)
+                .Index(t => t.ApplicationUser_Id);
+
+            CreateTable(
+                "dbo.SubMenus",
+                c => new
+                {
+                    SubMenuId = c.Int(nullable: false, identity: true),
+                    SubMenuName = c.String(nullable: false, maxLength: 100),
+                    SubMenuIcon = c.String(nullable: false, maxLength: 100),
+                    MenuId = c.Int(nullable: false),
+                    DisplayOrder = c.Int(nullable: false),
+                    Status = c.Boolean(nullable: false),
+                    ApplicationUser_Id = c.String(maxLength: 128),
+                })
+                .PrimaryKey(t => t.SubMenuId)
+                .ForeignKey("dbo.User", t => t.ApplicationUser_Id)
+                .Index(t => t.ApplicationUser_Id);
+
             CreateTable(
                 "dbo.Role",
                 c => new
@@ -41,6 +60,7 @@ namespace AdminWebApp.Migrations
                 .ForeignKey("dbo.User", t => t.UserId, cascadeDelete: true)
                 .Index(t => t.UserId)
                 .Index(t => t.RoleId);
+            
             
             CreateTable(
                 "dbo.User",
@@ -95,6 +115,7 @@ namespace AdminWebApp.Migrations
         
         public override void Down()
         {
+            DropForeignKey("dbo.SubMenus", "ApplicationUser_Id", "dbo.User");
             DropForeignKey("dbo.UserRole", "UserId", "dbo.User");
             DropForeignKey("dbo.Menus", "ApplicationUser_Id", "dbo.User");
             DropForeignKey("dbo.UserLogin", "UserId", "dbo.User");
@@ -103,6 +124,7 @@ namespace AdminWebApp.Migrations
             DropIndex("dbo.UserLogin", new[] { "UserId" });
             DropIndex("dbo.UserClaim", new[] { "UserId" });
             DropIndex("dbo.User", "UserNameIndex");
+            DropIndex("dbo.SubMenus", new[] { "ApplicationUser_Id" });
             DropIndex("dbo.UserRole", new[] { "RoleId" });
             DropIndex("dbo.UserRole", new[] { "UserId" });
             DropIndex("dbo.Role", "RoleNameIndex");
@@ -110,6 +132,7 @@ namespace AdminWebApp.Migrations
             DropTable("dbo.UserLogin");
             DropTable("dbo.UserClaim");
             DropTable("dbo.User");
+            DropTable("dbo.SubMenus");
             DropTable("dbo.UserRole");
             DropTable("dbo.Role");
             DropTable("dbo.Menus");

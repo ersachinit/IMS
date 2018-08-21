@@ -1,5 +1,4 @@
-﻿using AdminWebApp.EntityDataModel;
-using AdminWebApp.Models;
+﻿using AdminWebApp.Models;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;
@@ -832,7 +831,7 @@ namespace AdminWebApp.Controllers
         }
 
         #region Menu Management
-        // GET: Employee  
+        // GET: ManageMenu  
         public ActionResult ManageMenu()
         {
             if (User.Identity.IsAuthenticated)
@@ -851,45 +850,26 @@ namespace AdminWebApp.Controllers
         }
         /// <summary>  
         ///   
-        /// Get All Employee  
+        /// Get All Menu  
         /// </summary>  
         /// <returns></returns>  
-        public JsonResult Get_AllEmployee()
+        public JsonResult GetAllMenu()
         {
-            using (webAppDbEntities Obj = new webAppDbEntities())
-            {
-                List<Menu> Emp = Obj.Menus.ToList();
-                return Json(Emp, JsonRequestBehavior.AllowGet);
-            }
+            List<Menus> menu = context.Menus.ToList();
+            return Json(menu, JsonRequestBehavior.AllowGet);
         }
         /// <summary>  
-        /// Get Employee With Id  
+        /// Insert New Menu  
         /// </summary>  
-        /// <param name="Id"></param>  
+        /// <param name="menu"></param>  
         /// <returns></returns>  
-        public JsonResult Get_EmployeeById(string Id)
-        {
-            using (webAppDbEntities Obj = new webAppDbEntities())
-            {
-                int EmpId = int.Parse(Id);
-                return Json(Obj.Menus.Find(EmpId), JsonRequestBehavior.AllowGet);
-            }
-        }
-        /// <summary>  
-        /// Insert New Employee  
-        /// </summary>  
-        /// <param name="Employe"></param>  
-        /// <returns></returns>  
-        public string Insert_Employee(Menu menu)
+        public string InsertMenu(Menus menu)
         {
             if (menu != null && ModelState.IsValid)
             {
-                using (webAppDbEntities Obj = new webAppDbEntities())
-                {
-                    Obj.Menus.Add(menu);
-                    Obj.SaveChanges();
-                    return "Menu Added Successfully";
-                }
+                context.Menus.Add(menu);
+                context.SaveChanges();
+                return "Menu Added Successfully";
             }
             else
             {
@@ -897,50 +877,45 @@ namespace AdminWebApp.Controllers
             }
         }
         /// <summary>  
-        /// Delete Employee Information  
+        /// Delete Menu Information  
         /// </summary>  
-        /// <param name="Emp"></param>  
+        /// <param name="menu"></param>  
         /// <returns></returns>  
-        public string Delete_Employee(Menu menu)
+        public string DeleteMenu(Menus menu)
         {
             if (menu != null)
             {
-                using (webAppDbEntities Obj = new webAppDbEntities())
+                var menu_ = context.Entry(menu);
+                if (menu_.State == EntityState.Detached)
                 {
-                    var menu_ = Obj.Entry(menu);
-                    if (menu_.State == EntityState.Detached)
-                    {
-                        Obj.Menus.Attach(menu);
-                        Obj.Menus.Remove(menu);
-                    }
-                    Obj.SaveChanges();
-                    return "Menu Deleted Successfully";
+                    context.Menus.Attach(menu);
+                    context.Menus.Remove(menu);
                 }
+                context.SaveChanges();
+                return "Menu Deleted Successfully";
             }
             else
             {
-                return "Employee Not Deleted! Try Again";
+                return "Menu Not Deleted! Try Again";
             }
         }
         /// <summary>  
-        /// Update Employee Information  
+        /// Update Menu Information  
         /// </summary>  
-        /// <param name="Emp"></param>  
+        /// <param name="menu"></param>  
         /// <returns></returns>  
-        public string Update_Employee(Menu menu)
+        public string UpdateMenu(Menus menu)
         {
             if (menu != null && ModelState.IsValid)
             {
-                using (webAppDbEntities Obj = new webAppDbEntities())
-                {
-                    var menu_ = Obj.Entry(menu);
-                    Menu EmpObj = Obj.Menus.Where(x => x.MenuId == menu.MenuId).FirstOrDefault();
-                    EmpObj.MenuName = menu.MenuName;
-                    EmpObj.MenuIcon = menu.MenuIcon;
-                    EmpObj.Status = menu.Status;
-                    Obj.SaveChanges();
-                    return "Menu Updated Successfully";
-                }
+                var menu_ = context.Entry(menu);
+                Menus EmpObj = context.Menus.Where(x => x.MenuId == menu.MenuId).FirstOrDefault();
+                EmpObj.MenuName = menu.MenuName;
+                EmpObj.MenuIcon = menu.MenuIcon;
+                EmpObj.DisplayOrder = menu.DisplayOrder;
+                EmpObj.Status = menu.Status;
+                context.SaveChanges();
+                return "Menu Updated Successfully";
             }
             else
             {
@@ -948,5 +923,114 @@ namespace AdminWebApp.Controllers
             }
         }
         #endregion
+
+        #region SubMenu Management
+        // GET: ManageMenu  
+        public ActionResult ManageSubMenu()
+        {
+            if (User.Identity.IsAuthenticated)
+            {
+                if (!User.IsInRole("Admin"))
+                {
+                    return RedirectToAction("AuthorizationError", "Account");
+                }
+            }
+            else
+            {
+                return RedirectToAction("Login", "Account");
+            }
+            ViewBag.SubMenuCount = context.SubMenus.Count();
+            return View();
+        }
+        /// <summary>  
+        ///   
+        /// Get All SubMenu  
+        /// </summary>  
+        /// <returns></returns>  
+        public JsonResult GetAllSubMenu()
+        {
+            var subMenu = (from p in context.SubMenus
+                           join pm in context.Menus on p.MenuId equals pm.MenuId
+                           select new { p.SubMenuId, p.MenuId, pm.MenuName, p.SubMenuName, p.SubMenuIcon, p.DisplayOrder, p.Status }).ToList();
+
+            return Json(subMenu, JsonRequestBehavior.AllowGet);
+        }
+        /// <summary>  
+        /// Get SubMenu With Id  
+        /// </summary>  
+        /// <param name="Id"></param>  
+        /// <returns></returns>  
+        public JsonResult GetSubMenuById(string Id)
+        {
+            int SubMenuId = int.Parse(Id);
+            return Json(context.SubMenus.Find(SubMenuId), JsonRequestBehavior.AllowGet);
+        }
+        /// <summary>  
+        /// Insert New SubMenu  
+        /// </summary>  
+        /// <param name="subMenu"></param>  
+        /// <returns></returns>  
+        public string InsertSubMenu(SubMenus subMenu)
+        {
+            if (subMenu != null && ModelState.IsValid)
+            {
+                context.SubMenus.Add(subMenu);
+                context.SaveChanges();
+                return "SubMenu Added Successfully";
+            }
+            else
+            {
+                return "SubMenu Not Inserted! Try Again";
+            }
+        }
+        /// <summary>
+        /// Delete SubMenu
+        /// </summary>
+        /// <param name="subMenu"></param>
+        /// <returns></returns>
+        public string DeleteSubMenu(SubMenus subMenu)
+        {
+            if (subMenu != null)
+            {
+                var subMenu_ = context.Entry(subMenu);
+                if (subMenu_.State == EntityState.Detached)
+                {
+                    context.SubMenus.Attach(subMenu);
+                    context.SubMenus.Remove(subMenu);
+                }
+                context.SaveChanges();
+                return "SubMenu Deleted Successfully";
+            }
+            else
+            {
+                return "SubMenu Not Deleted! Try Again";
+            }
+        }
+        /// <summary>  
+        /// Update SubMenu Information  
+        /// </summary>  
+        /// <param name="subMenu"></param>  
+        /// <returns></returns>  
+        public string UpdateSubMenu(SubMenus subMenu)
+        {
+            if (subMenu != null && ModelState.IsValid)
+            {
+                var menu_ = context.Entry(subMenu);
+                SubMenus EmpObj = context.SubMenus.Where(x => x.SubMenuId == subMenu.SubMenuId).FirstOrDefault();
+                EmpObj.SubMenuName = subMenu.SubMenuName;
+                EmpObj.SubMenuIcon = subMenu.SubMenuIcon;
+                EmpObj.MenuId = subMenu.MenuId;
+                EmpObj.DisplayOrder = subMenu.DisplayOrder;
+                EmpObj.Status = subMenu.Status;
+                context.SaveChanges();
+                return "SubMenu Updated Successfully";
+            }
+            else
+            {
+                return "SubMenu Not Updated! Try Again";
+            }
+        }
+        #endregion
+
     }
 }

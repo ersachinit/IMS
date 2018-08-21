@@ -1,9 +1,9 @@
 ﻿var app = angular.module("myApp", []);
-app.controller("myCtrl", function ($scope, $http) {
+app.controller("ManageMenu", function ($scope, $http) {
     $scope.Status = true;
     $scope.Test = "Active";
 
-    $scope.GetValue = function () {
+    $scope.GetStatus = function () {
         $scope.Status = $scope.Status;
         if ($scope.Status) {
             $scope.Test = "Active";
@@ -12,23 +12,25 @@ app.controller("myCtrl", function ($scope, $http) {
             $scope.Test = "InActive";
         }
     }
-    $scope.InsertData = function () {
+    $scope.InsertMenu = function () {
         var Action = document.getElementById("btnSave").getAttribute("value");
         if (Action === "Submit") {
             $scope.Menu = {};
             $scope.Menu.MenuName = $scope.MenuName;
             $scope.Menu.MenuIcon = $scope.MenuIcon;
+            $scope.Menu.DisplayOrder = $scope.DisplayOrder;
             $scope.Menu.Status = $scope.Status;
             $http({
                 method: "post",
-                url: "https://localhost:44369/Account/Insert_Employee",
+                url: "https://localhost:44369/Account/InsertMenu",
                 datatype: "json",
                 data: JSON.stringify($scope.Menu)
             }).then(function (response) {
                 toastrMsg(response.data, 'success')
-                $scope.GetAllData();
+                $scope.GetAllMenu();
                 $scope.MenuName = "";
                 $scope.MenuIcon = "";
+                $scope.DisplayOrder = "";
                 $scope.Status = true;
                 $scope.Test = "Active";
 
@@ -37,18 +39,20 @@ app.controller("myCtrl", function ($scope, $http) {
             $scope.Menu = {};
             $scope.Menu.MenuName = $scope.MenuName;
             $scope.Menu.MenuIcon = $scope.MenuIcon;
+            $scope.Menu.DisplayOrder = $scope.DisplayOrder;
             $scope.Menu.Status = $scope.Status;
             $scope.Menu.MenuId = document.getElementById("MenuId_").value;
             $http({
                 method: "post",
-                url: "https://localhost:44369/Account/Update_Employee",
+                url: "https://localhost:44369/Account/UpdateMenu",
                 datatype: "json",
                 data: JSON.stringify($scope.Menu)
             }).then(function (response) {
                 toastrMsg(response.data, 'success')
-                $scope.GetAllData();
+                $scope.GetAllMenu();
                 $scope.MenuName = "";
                 $scope.MenuIcon = "";
+                $scope.DisplayOrder = "";
                 $scope.Status = true;
                 $scope.Test = "Active";
                 document.getElementById("btnSave").setAttribute("value", "Submit");
@@ -57,10 +61,10 @@ app.controller("myCtrl", function ($scope, $http) {
             })
         }
     }
-    $scope.GetAllData = function () {
+    $scope.GetAllMenu = function () {
         $http({
             method: "get",
-            url: "https://localhost:44369/Account/Get_AllEmployee"
+            url: "https://localhost:44369/Account/GetAllMenu"
         }).then(function (response) {
             $scope.menus = response.data;
             //$(window).on("load", function () {                
@@ -84,23 +88,23 @@ app.controller("myCtrl", function ($scope, $http) {
             toastrMsg("Error Occur", 'error')
         })
     };
-    $scope.DeleteEmp = function (Emp) {
+    $scope.DeleteMenu = function (menu) {
         $http({
             method: "post",
-            url: "https://localhost:44369/Account/Delete_Employee",
+            url: "https://localhost:44369/Account/DeleteMenu",
             datatype: "json",
-            data: JSON.stringify(Emp)
+            data: JSON.stringify(menu)
         }).then(function (response) {
             toastrMsg(response.data, 'success')
-            $scope.GetAllData();
+            $scope.GetAllMenu();
         })
     };
-    $scope.UpdateEmp = function (Emp) {
-
-        document.getElementById("MenuId_").value = Emp.MenuId;
-        $scope.MenuName = Emp.MenuName;
-        $scope.MenuIcon = Emp.MenuIcon;
-        $scope.Status = Emp.Status;
+    $scope.UpdateMenu = function (menu) {
+        document.getElementById("MenuId_").value = menu.MenuId;
+        $scope.MenuName = menu.MenuName;
+        $scope.MenuIcon = menu.MenuIcon;
+        $scope.DisplayOrder = menu.DisplayOrder;
+        $scope.Status = menu.Status;
         document.getElementById("btnSave").setAttribute("value", "Update");
         //document.getElementById("btnSave").style.backgroundColor = "Yellow";
         document.getElementById("spn").innerHTML = "Update Menu";
