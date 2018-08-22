@@ -46,7 +46,7 @@ app.controller("ManageSubMenu", function ($scope, $http) {
             })
         } else {
             $scope.SubMenu = {};
-            $scope.SubMenu.MenuId = $scope.MenuId;
+            $scope.SubMenu.MenuId = document.getElementById("MenuId_").value;
             $scope.SubMenu.SubMenuName = $scope.SubMenuName;
             $scope.SubMenu.SubMenuIcon = $scope.SubMenuIcon;
             $scope.SubMenu.DisplayOrder = $scope.DisplayOrder;
@@ -73,11 +73,14 @@ app.controller("ManageSubMenu", function ($scope, $http) {
     }
     $scope.GetAllSubMenu = function () {
         $scope.GetMenu();
+        //testData();
         $http({
             method: "get",
             url: "https://localhost:44369/Account/GetAllSubMenu"
         }).then(function (response) {
             $scope.subMenus = response.data;
+            //$('#example').DataTable().row.add(["2.0", "Item 2", "Generic Desc", "2", 200]).draw();
+
         }, function () {
             toastrMsg("Error Occur", 'error')
         })
@@ -93,16 +96,53 @@ app.controller("ManageSubMenu", function ($scope, $http) {
             $scope.GetAllSubMenu();
         })
     };
+
     $scope.UpdateSubMenu = function (menu) {
         document.getElementById("SubMenuId_").value = menu.SubMenuId;
-        $scope.MenuId = $scope.MenuList[menu.MenuId];
+        document.getElementById("MenuId_").value = menu.MenuId;
+        //$scope.MenuId = menu.MenuId; 
         $scope.SubMenuName = menu.SubMenuName;
         $scope.SubMenuIcon = menu.SubMenuIcon;
         $scope.DisplayOrder = menu.DisplayOrder;
         $scope.Status = menu.Status;
         document.getElementById("btnSave").setAttribute("value", "Update");
-        //document.getElementById("btnSave").style.backgroundColor = "Yellow";
         document.getElementById("spn").innerHTML = "Update SubMenu";
     }
 })
-
+function SetDropDown(x) {
+    //var scope = angular.element('#MenuId').scope();
+    $("#MenuId").val("" + $('#MenuId_').val() + "");
+}
+function testData() {    
+    $.ajax({
+        url: "https://localhost:44369/Account/GetAllSubMenu",
+        dataType: "json",
+        type: "GET",
+        contentType: 'application/json; charset=utf-8',
+        async: true,
+        success: function (data) {
+            var result = data.data;
+            var table = $('#tblSubMenu').DataTable();
+            table
+                .clear()
+                .draw();
+            var count = 1;
+            $.each(result, function (key, item) {               
+                table.row.add([
+                    count,
+                    item.MenuName,
+                    item.SubMenuName,
+                    item.SubMenuIcon,
+                    item.DisplayOrder,
+                    item.Status,
+                    ' <a href="javascript:void(0)" ng-click="UpdateSubMenu(submenu)"><i class="far fa-edit fa-2x"></i></a><span style="font-size:xx-large"> | </span><a href="javascript:void(0)" ng-click="DeleteSubMenu(submenu)"><i class="fas fa-trash fa-2x"></i></a>',
+                   //'<a href="#" onclick="Edit(' + item.Id + ')"  style="cursor:pointer"><img src="/Image/icons_Edit-24.png" /></a> / <a onclick="Delete(' + item.Id + ')" style="cursor:pointer"><img src="/Image/icons_delete-20.png" /></a>',
+                ]).draw(false);
+                count++;
+            })
+        },
+        error: function (xhr) {
+            alert("error");
+        }
+    });
+}

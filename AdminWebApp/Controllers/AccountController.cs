@@ -16,6 +16,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using Enums;
 
 namespace AdminWebApp.Controllers
 {
@@ -952,7 +953,7 @@ namespace AdminWebApp.Controllers
             var subMenu = (from p in context.SubMenus
                            join pm in context.Menus on p.MenuId equals pm.MenuId
                            select new { p.SubMenuId, p.MenuId, pm.MenuName, p.SubMenuName, p.SubMenuIcon, p.DisplayOrder, p.Status }).ToList();
-
+            
             return Json(subMenu, JsonRequestBehavior.AllowGet);
         }
         /// <summary>  

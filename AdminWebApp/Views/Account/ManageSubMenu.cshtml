@@ -23,9 +23,9 @@
                             <div class="col-sm-12">
                                 <div class="row">
                                     <div class="col-md-3">
-                                        <label class='required'>Menu Name:</label>                                       
-                                        <select class="form-control" ng-model="MenuId" ng-options="menu.MenuId as menu.MenuName for menu in MenuList track by menu.MenuId">
-                                            <option value=""> Select </option>
+                                        <label class='required'>Menu Name:</label>
+                                        <select id="MenuId" class="form-control" ng-model="MenuId" ng-options="menu.MenuId as menu.MenuName for menu in MenuList track by menu.MenuId" ng-init="MenuId = MenuList[0]">
+                                            <option value="" class="sele"> Select </option>
                                         </select>
                                     </div>
                                     <div class="col-md-3">
@@ -45,9 +45,9 @@
                                     </div>
                                     <div class="col-md-1">
                                         <label>Status:</label><br />
-                                        <input id="chk1" type="checkbox" ng-change="GetStatus()" ng-model="Status"><br />{{ Test }}
+                                        <input type="checkbox" ng-change="GetStatus()" ng-model="Status"><br />{{ Test }}
                                     </div>
-                                </div>                               
+                                </div>
                                 <div class="row">
                                     <div class="col-md-12">
                                         <input type="button" id="btnSave" class="btn btn-primary" value="Submit" ng-click="InsertSubMenu()" />
@@ -59,7 +59,7 @@
                 </div>
             </div>
             <hr />
-            <table class="table table-hover table-bordered table-condensed" id="tblMenu">
+            <table class="table table-hover table-bordered table-condensed" id="tblSubMenu" my-directive>
                 <thead>
                     <tr>
                         <th><b>S.N</b></th>
@@ -89,21 +89,22 @@
                             {{submenu.DisplayOrder}}
                         </td>
                         <td>
-                            {{submenu.Status}}
+                            <div ng-if="submenu.Status == true">Active</div>
+                            <div ng-if="submenu.Status == false">Inactive</div>
                         </td>
-                        <td>
+                        <td onclick="SetDropDown(this)">
                             <a href="javascript:void(0)" ng-click="UpdateSubMenu(submenu)"><i class="far fa-edit fa-2x"></i></a><span style="font-size:xx-large"> | </span>
                             <a href="javascript:void(0)" ng-click="DeleteSubMenu(submenu)"><i class="fas fa-trash fa-2x"></i></a>
                         </td>
                     </tr>
                 </tbody>
             </table>
-        </div>
-
-        <div class="panel-footer">
-            <p class="box-title"><b>Total Users till @String.Format("{0 : dddd, MMMM d, yyyy}", DateTime.Now)  : </b><span class="label label-primary">@ViewBag.SubMenuCount</span></p>
+            <div class="panel-footer">
+                <p class="box-title"><b>Total Users till @String.Format("{0 : dddd, MMMM d, yyyy}", DateTime.Now)  : </b><span class="label label-primary">@ViewBag.SubMenuCount</span></p>
+            </div>
         </div>
     </div>
 </div>
-
 @Html.Hidden("SubMenuId_")
+@Html.Hidden("MenuId_")
+

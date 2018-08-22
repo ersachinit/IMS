@@ -80,7 +80,8 @@
                             {{menu.DisplayOrder}}
                         </td>
                         <td>
-                            {{menu.Status}}
+                            <div ng-if="menu.Status == true">Active</div>
+                            <div ng-if="menu.Status == false">Inactive</div>
                         </td>
                         <td>
                             <a href="javascript:void(0)" ng-click="UpdateMenu(menu)"><i class="far fa-edit fa-2x"></i></a><span style="font-size:xx-large"> | </span>

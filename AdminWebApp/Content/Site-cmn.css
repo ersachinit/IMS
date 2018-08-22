@@ -5,10 +5,12 @@
 
 .dropdown-menu > li > a {
     line-height: 21px;
-    padding: 5px 8px;
+    padding: 5px 12px;
 }
-
-.navbar-nav > li > .dropdown-menu {
+.dropdown-menu {
+    min-width:165px;
+}
+    .navbar-nav > li > .dropdown-menu {
     margin-top: 2px;
 }
 
