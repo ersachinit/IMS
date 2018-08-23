@@ -148,4 +148,14 @@ namespace AdminWebApp.Models
         public string Email { get; set; }
         public string Role { get; set; }
     }
+    public class SubMenuModel
+    {
+        public int SubMenuId { get; set; }
+        public int MenuId { get; set; }
+        public string MenuName { get; set; }
+        public string SubMenuName { get; set; }
+        public string SubMenuIcon { get; set; }
+        public int DisplayOrder { get; set; }
+        public bool Status { get; set; }
+    }
 }
