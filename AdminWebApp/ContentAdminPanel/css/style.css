@@ -2402,7 +2402,7 @@ a {
   animation: none !important; }
 
 section.content {
-  margin: 100px 15px 0 315px;
+  margin: 50px 15px 0 315px;
   -moz-transition: 0.5s;
   -o-transition: 0.5s;
   -webkit-transition: 0.5s;
@@ -7623,7 +7623,7 @@ fieldset[disabled] .form-control {
         display: inline-flex;
         vertical-align: middle;
         width: 100%;
-        padding: 10px 13px; }
+        padding: 0px 13px; }
         .sidebar .menu .list a:hover, .sidebar .menu .list a:active, .sidebar .menu .list a:focus {
           text-decoration: none !important; }
         .sidebar .menu .list a small {

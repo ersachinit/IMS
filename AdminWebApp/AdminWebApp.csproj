@@ -87,10 +87,12 @@
     <Reference Include="System.IdentityModel.Tokens.Jwt, Version=5.1.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\System.IdentityModel.Tokens.Jwt.5.1.2\lib\net451\System.IdentityModel.Tokens.Jwt.dll</HintPath>
     </Reference>
+    <Reference Include="System.IO.Compression" />
     <Reference Include="System.Net" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Security" />
     <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Transactions" />
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
@@ -216,6 +218,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="App_Data\DataAccess.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\IdentityConfig.cs" />
@@ -226,15 +229,17 @@
     <Compile Include="Controllers\ApplicationBaseController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
+    <Compile Include="Controllers\MasterController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201808211418238_InitialDbWithSubMenu.cs" />
-    <Compile Include="Migrations\201808211418238_InitialDbWithSubMenu.Designer.cs">
-      <DependentUpon>201808211418238_InitialDbWithSubMenu.cs</DependentUpon>
+    <Compile Include="Migrations\201809260923260_InitialDBWithDynamicMenu.cs" />
+    <Compile Include="Migrations\201809260923260_InitialDBWithDynamicMenu.Designer.cs">
+      <DependentUpon>201809260923260_InitialDBWithDynamicMenu.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\CustomModels.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -3851,8 +3856,8 @@
     <Content Include="Scripts\angular.min.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
-    <Content Include="Scripts\CustomJS\angular\ang-SubMenu.js" />
     <Content Include="Scripts\CustomJS\angular\ang-Menu.js" />
+    <Content Include="Scripts\CustomJS\angular\ang-SubMenu.js" />
     <Content Include="Scripts\CustomJS\jquery-cmn-3.0.2.js" />
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
     <Content Include="fonts\glyphicons-halflings-regular.ttf" />
@@ -3923,11 +3928,13 @@
     <Content Include="Views\Account\ConfirmYourEmail.cshtml" />
     <Content Include="Views\Partials\UserProfile.cshtml" />
     <Content Include="Views\Account\ManageMenu.cshtml" />
-    <Content Include="Views\Account\ManageSubMenu.cshtml" />
+    <Content Include="Views\Account\ManageRoleMenu.cshtml" />
+    <Content Include="Views\Master\UserRegistration.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="App_Data\" />
-    <Folder Include="Scripts\CustomJS\jQuery\" />
+    <EmbeddedResource Include="Migrations\201809260923260_InitialDBWithDynamicMenu.resx">
+      <DependentUpon>201809260923260_InitialDBWithDynamicMenu.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
@@ -3953,11 +3960,7 @@
     <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Migrations\201808211418238_InitialDbWithSubMenu.resx">
-      <DependentUpon>201808211418238_InitialDbWithSubMenu.cs</DependentUpon>
-    </EmbeddedResource>
-  </ItemGroup>
+  <ItemGroup />
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>

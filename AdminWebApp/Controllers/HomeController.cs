@@ -31,5 +31,9 @@ namespace AdminWebApp.Controllers
             }
 
         }
+        public ActionResult SachinTripathi()
+        {
+            return View();
+        }
     }
 }

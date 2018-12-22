@@ -1,101 +1,173 @@
-﻿
+﻿@model AdminWebApp.Models.Menus
 @{
-    ViewBag.Title = "ManageMenu";
+    ViewBag.Title = "Manage Menu";
+    List<AdminWebApp.Models.Menus> menuList = ViewBag.Menu;
 }
-<script src="~/Scripts/CustomJS/angular/ang-Menu.js"></script>
-<div ng-app="myApp">
-    <div class="panel panel-primary divList" ng-controller="ManageMenu" ng-init="GetAllMenu()">
-        <div class="panel-heading">
-            <h3 class="box-title">
-                <b>Manage Menu</b>
-            </h3>
-            <h5>
-                <span id="spn">Add New Menu</span>
-            </h5>
-        </div>
-        <!-- /.box-header -->
-        <div class="panel-body">
-            <div class="container">
-                <div class="col-lg-12 well">
-                    <div class="row">
-                        @Html.ValidationSummary("", new { @class = "text-danger" })
-                        <form>
-                            <div class="col-sm-12">
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <label class='required'>Menu Name:</label>
-                                        <input type="text" ng-model="MenuName" placeholder="Menu Name" required class="form-control">
-                                    </div>
-                                    <div class="col-md-4">
-                                        <label class='required'>Menu Icon:</label>
-                                        <input type="text" class="form-control" placeholder="Menu Icon" ng-model="MenuIcon">
-                                        <span style="color:gray">Menu Icon Sample:</span><br />
-                                        <span style="color:gray">Ex. -@{string abc = "<i class='fab fa-example'></i>";} @abc</span><br />
-                                        <span style="color:gray">Please enter only class, which is - @Html.Raw("fab fa-example")</span>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <label class='required'>Display Order:</label><br />
-                                        <input type="text" ng-model="DisplayOrder" placeholder="Display Order" required class="form-control">
-                                    </div>
-                                    <div class="col-md-1">
-                                        <label>Status:</label><br />
-                                        <input id="chk1" type="checkbox" ng-change="GetStatus()" ng-model="Status"><br />{{ Test }}
-                                    </div>
-                                </div>
+@using (Html.BeginForm("ManageMenu", "Account", FormMethod.Post, new { @class = "form-horizontal", role = "form", enctype = "multipart/form-data", id = "frm" }))
+{
+    <div id="top">
+        <div class="panel panel-primary divList">
+            <div class="panel-heading">
+                <h3 class="box-title">
+                    <b>Manage Menu</b>
+                </h3>
+                <h5>
+                    <span id="spn">Add New Menu</span>
+                </h5>
+            </div>
+            <!-- /.box-header -->
+            <div class="panel-body">
+                <div class="container">
+                    <div class="col-lg-12 well">
+                        <div class="row">
+                            @Html.ValidationSummary("", new { @class = "text-danger" })
+                            <form>
+                                <div class="col-sm-12">
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <label>Parent Name:</label>
+                                            @Html.HiddenFor(m => m.MenuId)
+                                            @Html.DropDownList("ParentId", (SelectList)ViewBag.MenuList, "Select", new { @class = "form-control" })
+                                            <span style="color:gray"><b>Note:</b> In case of ParentMenu choose ParentMenu</span><br />
 
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <input type="button" id="btnSave" class="btn btn-primary" value="Submit" ng-click="InsertMenu()" />
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="required">Menu Name:</label>
+                                            @Html.TextBoxFor(m => m.MenuName, new { @class = "form-control", @placeholder = "MenuName" })
+                                        </div>
+                                        <div class="col-md-3"  id="mLink">
+                                            <label>Menu Link:</label>
+                                            @Html.TextBoxFor(m => m.MenuLink, new { @class = "form-control", @placeholder = "Menu Link" })
+                                        </div>
+                                        <div class="col-md-3" id="mIcon">
+                                            <label>Menu Icon:</label>
+                                            @Html.TextBoxFor(m => m.MenuIcon, new { @class = "form-control", @placeholder = "Menu Icon" })
+                                            <span style="color:gray"><b>Menu Icon Sample:</b></span><br />
+                                            <span style="color:gray">Ex. -@{string abc = "<i class='fab fa-example'>text-data</i>";} @abc</span><br />
+                                            <span style="color:gray">Enter only InnerText, which is - @Html.Raw("text-data")</span>
+                                        </div>
+                                        <div class="col-md-2">
+                                            <label class='required'>Display Order:</label><br />
+                                            @Html.TextBoxFor(m => m.DisplayOrder, new { @class = "form-control", onkeypress = "return validateInt(event)", minlength = "1", maxlength = "3", @placeholder = "Display Order" })
+                                        </div>
+                                        <div class="col-md-1">
+                                            <label>Status:</label><br />
+                                            @Html.CheckBoxFor(m => m.Status, new { @class = "form-control", @checked = "True" })
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <input type="submit" class="btn btn-primary" value="Submit" id="btnSubmit" />
+                                            <span id="Error" style="display:none;color:green"></span>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        </form>
+                            </form>
+                        </div>
                     </div>
                 </div>
+                <hr />
+                <table class="table table-hover table-bordered table-condensed" id="tblMenu" my-directive>
+                    <thead>
+                        <tr>
+                            <th><b>S.N</b></th>
+                            <th><b>Menu Name</b></th>
+                            <th><b>Parent Name</b></th>
+                            <th><b>Menu Icon</b></th>
+                            <th><b>Menu Link</b></th>
+                            <th><b>Display Order</b></th>
+                            <th><b>Status</b></th>
+                            <th><b>Action</b></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{if (ViewBag.Menu != null)
+                            {
+                                var a = 1;
+                                foreach (var user in ViewBag.Menu)
+                                {
+                                    <tr>
+                                        <td>@a</td>
+                                        <td>@user.MenuName</td>
+                                        <td>@user.ParentId</td>
+                                        <td>@user.MenuIcon</td>
+                                        <td>@user.MenuLink</td>
+                                        <td>@user.DisplayOrder</td>
+                                        <td>@user.Status</td>
+                                        <td>
+                                            <a href="#top" onclick="Edit(@user.MenuId)"><i class="far fa-edit fa-2x"></i></a>
+                                            <span style="font-size:xx-large"> | </span>
+                                            <a href="@Url.Action("DeleteMenu", "Account", new { MenuId = user.MenuId })"><i class="fas fa-trash fa-2x"></i></a>
+                                        </td>
+                                    </tr>
+                                    a++;
+                                }
+                            }
+                        }
+                    </tbody>
+                </table>
+                <div class="panel-footer">
+                    <p class="box-title"><b>Total Users till @String.Format("{0 : dddd, MMMM d, yyyy}", DateTime.Now)  : </b><span class="label label-primary">@ViewBag.MenuCount Menus</span></p>
+                </div>
             </div>
-            <hr />
-            <table class="table table-hover table-bordered table-condensed" id="tblMenu">
-                <thead>
-                    <tr>
-                        <th><b>S.N</b></th>
-                        <th><b>Menu Name</b></th>
-                        <th><b>Menu Icon</b></th>
-                        <th><b>Display Order</b></th>
-                        <th><b>Status</b></th>
-                        <th><b>Action</b></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr ng-repeat="menu in menus">
-                        <td>
-                            {{$index + 1}}
-                        </td>
-                        <td>
-                            {{menu.MenuName}}
-                        </td>
-                        <td>
-                            <i class="{{menu.MenuIcon}}"></i>
-                        </td>
-                        <td>
-                            {{menu.DisplayOrder}}
-                        </td>
-                        <td>
-                            <div ng-if="menu.Status == true">Active</div>
-                            <div ng-if="menu.Status == false">Inactive</div>
-                        </td>
-                        <td>
-                            <a href="javascript:void(0)" ng-click="UpdateMenu(menu)"><i class="far fa-edit fa-2x"></i></a><span style="font-size:xx-large"> | </span>
-                            <a href="javascript:void(0)" ng-click="DeleteMenu(menu)"><i class="fas fa-trash fa-2x"></i></a>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <div class="panel-footer">
-            <p class="box-title"><b>Total Users till @String.Format("{0 : dddd, MMMM d, yyyy}", DateTime.Now)  : </b><span class="label label-primary">@ViewBag.MenuCount</span></p>
         </div>
     </div>
-</div>
+                            }
+<script type="text/javascript">
 
-@Html.Hidden("MenuId_")
+    $(function () {
+        GetDatatableFor("tblMenu");
+        $("#Error").text("@TempData["Error"]").prop("color", "red");
+        $("#Error").show(); setTimeout(function () {
+            $("#Error").hide('fade', {}, 500)
+        }, 5000);
+        $('#ParentId').append($("<option/>", {
+            value: 0,
+            text: "Parent Menu"
+        }));
+        $('#mIcon').hide();
+        $('#mLink').hide();
+        $('#ParentId').on('change', function () {
+            if ($('#ParentId').val() == 0) {
+                $('#mIcon').show();
+                $('#mLink').hide();
+            }
+            else {
+                $('#mIcon').hide();
+                $('#mLink').show();
+            }
+        });
+
+    });
+
+    function Edit(MenuId) {
+        $.ajax({
+            url: "/Account/EditMenu",
+            type: 'POST',
+            data: { MenuId: MenuId },
+            dataType: 'json', // added data type
+            success: function (userInfo) {
+                userInfo = userInfo[0];
+                if (userInfo != false) {
+                    $('#mIcon').show();
+                    $('#mLink').show();
+                    $('#MenuId').val(userInfo.MenuId);
+                    $('#ParentId').val(userInfo.ParentId);
+                    $('#MenuName').val(userInfo.MenuName);
+                    $('#MenuIcon').val(userInfo.MenuIcon);
+                    if (userInfo.ParentId != 0) {
+                        $('#mLink').show();
+                        $('#MenuLink').val(userInfo.MenuLink);
+                    }
+                    $('#DisplayOrder').val(userInfo.DisplayOrder);
+                    $("#Status").prop("checked", userInfo.Status);
+                    $('#btnSubmit').val("Update");
+                    $('#spn').text("Update Menu");
+                }
+                else {
+                    toastrMsg("Unable to get the user!", "error");
+                }
+            }
+        });
+    }
+</script>

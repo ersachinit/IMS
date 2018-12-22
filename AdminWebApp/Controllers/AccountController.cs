@@ -1,4 +1,5 @@
 ﻿using AdminWebApp.Models;
+using BusinessAccessLayer;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;
@@ -6,6 +7,7 @@ using Microsoft.Owin.Security;
 using Shared;
 using SMS;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.IO;
@@ -16,6 +18,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.Security;
 
 namespace AdminWebApp.Controllers
 {
@@ -28,7 +31,7 @@ namespace AdminWebApp.Controllers
         private ApplicationUserManager _userManager;
         readonly EmailTemplate email = new EmailTemplate();
         readonly SMSUtility SMS = new SMSUtility();
-
+        CommonBAL bal = new CommonBAL();
 
         public AccountController()
         {
@@ -283,6 +286,7 @@ namespace AdminWebApp.Controllers
                     user.FirstName = model.FirstName;
                     user.LastName = model.LastName;
                     user.Email = model.Email;
+                    user.UserName = model.Email;
                     user.PasswordHash = HashPassword(model.Password);
                     user.PhoneNumber = model.PhoneNo;
                     user.DOB = Convert.ToDateTime(model.DOB);
@@ -570,6 +574,7 @@ namespace AdminWebApp.Controllers
         public ActionResult LogOff()
         {
             AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+            Session.Abandon(); // it will clear the session at the end of request
             return RedirectToAction("Login", "Account");
         }
         public JsonResult SessionTimeout()
@@ -763,7 +768,6 @@ namespace AdminWebApp.Controllers
         public ActionResult CreateRoles(CreateRoleModel model)
         {
             context = new ApplicationDbContext();
-            var UserManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(context));
             var RoleManager = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(context));
 
             // Create Admin Role            
@@ -780,12 +784,19 @@ namespace AdminWebApp.Controllers
         public ActionResult DeleteRole(string RoleName)
         {
             context = new ApplicationDbContext();
-            var UserManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(context));
             var RoleManager = new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(context));
             if (RoleManager.RoleExists(RoleName))
             {
                 var role = RoleManager.FindByName(RoleName);
                 RoleManager.Delete(role);
+                var x = (from y in context.RoleMenus
+                         where y.RoleId == role.Id
+                         select y).FirstOrDefault();
+                if (x != null)
+                {
+                    context.RoleMenus.Remove(x);
+                    context.SaveChanges();
+                }
             }
             return RedirectToAction("CreateRoles", "Account");
         }
@@ -830,8 +841,83 @@ namespace AdminWebApp.Controllers
             }
         }
 
+        [HttpGet]
+        public ActionResult ManageRoleMenu()
+        {
+            if (User.Identity.IsAuthenticated)
+            {
+                if (!User.IsInRole("Admin"))
+                {
+                    return RedirectToAction("AuthorizationError", "Account");
+                }
+            }
+            else
+            {
+                return RedirectToAction("Login", "Account");
+            }
+            ViewBag.Menu = context.Menus.ToList();
+            ViewBag.RoleName = new SelectList(context.Roles.Where(u => !u.Name.Contains("Administrator")).ToList(), "Id", "Name");
+            return View();
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult ManageRoleMenu(RoleMenus model, FormCollection collection)
+        {
+            try
+            {
+                if (!string.IsNullOrEmpty(collection["chkMenu"]))
+                {
+                    model.MenuIds = collection["chkMenu"];
+                    if (model.Id == 0)
+                    {
+                        context.RoleMenus.Add(model);
+                        context.SaveChanges();
+                    }
+                    else
+                    {
+                        //var entity = context.RoleMenus.Find(model.Id);
+                        RoleMenus rm = new RoleMenus();
+                        rm = context.RoleMenus.Find(model.Id);
+                        rm.MenuIds = model.MenuIds;
+                        context.Entry(rm).State = EntityState.Modified;
+                        context.SaveChanges();
+                    }
+                }
+            }
+            catch (Exception)
+            {
+
+            }
+            return RedirectToAction("ManageRoleMenu", "Account");
+        }
+        public JsonResult GetMenusforRole(string RoleId)
+        {
+            try
+            {
+                var role = (from p in context.RoleMenus
+                            where p.RoleId == RoleId
+                            select new { p.MenuIds }
+                          ).ToList();
+                if (role.Count != 0)
+                {
+                    dynamic data = context.RoleMenus.Where(m => m.RoleId == RoleId);
+                    return Json(data, JsonRequestBehavior.AllowGet);
+                }
+                else
+                {
+                    return Json(false, JsonRequestBehavior.AllowGet);
+                }
+            }
+            catch (Exception)
+            {
+
+            }
+            return Json("", JsonRequestBehavior.AllowGet);
+        }
+
         #region Menu Management
         // GET: ManageMenu  
+        [HttpGet]
         public ActionResult ManageMenu()
         {
             if (User.Identity.IsAuthenticated)
@@ -840,207 +926,100 @@ namespace AdminWebApp.Controllers
                 {
                     return RedirectToAction("AuthorizationError", "Account");
                 }
+                ViewBag.MenuList = new SelectList(context.Menus.Where(u => !u.MenuName.Contains("Admin")).ToList(), "MenuId", "MenuName");
             }
             else
             {
                 return RedirectToAction("Login", "Account");
-            }
+            }            
+            ViewBag.Menu = context.Menus.ToList();
             ViewBag.MenuCount = context.Menus.Count();
             return View();
-        }
-        /// <summary>  
-        ///   
-        /// Get All Menu  
-        /// </summary>  
-        /// <returns></returns>  
-        public JsonResult GetAllMenu()
-        {
-            List<Menus> menu = context.Menus.ToList();
-            return Json(menu, JsonRequestBehavior.AllowGet);
         }
         /// <summary>  
         /// Insert New Menu  
         /// </summary>  
         /// <param name="menu"></param>  
         /// <returns></returns>  
-        public string InsertMenu(Menus menu)
+        [HttpPost]
+        public ActionResult ManageMenu(Menus menu)
         {
-            if (menu != null && ModelState.IsValid)
+            try
             {
-                context.Menus.Add(menu);
-                context.SaveChanges();
-                return "Menu Added Successfully";
+                if (menu.MenuId != 0)
+                {
+                    var menu_ = context.Entry(menu);
+                    Menus EmpObj = context.Menus.Where(x => x.MenuId == menu.MenuId).FirstOrDefault();
+                    EmpObj.ParentId = menu.ParentId;
+                    EmpObj.MenuName = menu.MenuName;
+                    EmpObj.MenuIcon = menu.MenuIcon ?? "";
+                    EmpObj.MenuLink = menu.MenuLink ?? "";
+                    EmpObj.DisplayOrder = menu.DisplayOrder;
+                    EmpObj.Status = menu.Status;
+                    context.SaveChanges();
+                    TempData["Error"] = "Menu updated succesfully!";
+                }
+                else
+                {
+                    menu.MenuIcon = menu.MenuIcon ?? "";
+                    menu.MenuLink = menu.MenuLink ?? "";
+                    context.Menus.Add(menu);
+                    context.SaveChanges();
+                    TempData["Error"] = "Menu saved succesfully!";
+                }
             }
-            else
+            catch (Exception ex)
             {
-                return "Menu Not Inserted! Try Again";
+                ModelState.AddModelError("CustomError", ex.Message);
             }
+            ViewBag.MenuList = new SelectList(context.Menus.Where(u => !u.MenuName.Contains("Admin")).ToList(), "MenuId", "MenuName");
+            return RedirectToAction("ManageMenu", "Account");
         }
+        /// <summary>  
+        ///   
+        /// Get All Menu  
+        /// </summary>  
+        /// <returns></returns>  
+        public JsonResult EditMenu(int MenuId)
+        {
+            dynamic menu;
+            if (MenuId == 0)
+            {
+                return Json(false, JsonRequestBehavior.AllowGet);
+            }
+            menu = context.Menus.Where(m => m.MenuId == MenuId);
+            return Json(menu, JsonRequestBehavior.AllowGet);
+        }
+
         /// <summary>  
         /// Delete Menu Information  
         /// </summary>  
         /// <param name="menu"></param>  
         /// <returns></returns>  
-        public string DeleteMenu(Menus menu)
+        public ActionResult DeleteMenu(Menus menu)
         {
-            if (menu != null)
+            try
             {
-                var menu_ = context.Entry(menu);
-                if (menu_.State == EntityState.Detached)
+                if (menu.MenuId != 0)
                 {
-                    context.Menus.Attach(menu);
-                    context.Menus.Remove(menu);
+                    var menu_ = context.Entry(menu);
+                    if (menu_.State == EntityState.Detached)
+                    {
+                        context.Menus.Attach(menu);
+                        context.Menus.Remove(menu);
+                    }
+                    context.SaveChanges();
+                    TempData["Error"] = "Menu deleted succesfully!";
+
                 }
-                context.SaveChanges();
-                return "Menu Deleted Successfully";
             }
-            else
+            catch (Exception ex)
             {
-                return "Menu Not Deleted! Try Again";
+                ModelState.AddModelError("CustomError", ex.Message);
             }
+            return RedirectToAction("ManageMenu", "Account");
         }
-        /// <summary>  
-        /// Update Menu Information  
-        /// </summary>  
-        /// <param name="menu"></param>  
-        /// <returns></returns>  
-        public string UpdateMenu(Menus menu)
-        {
-            if (menu != null && ModelState.IsValid)
-            {
-                var menu_ = context.Entry(menu);
-                Menus EmpObj = context.Menus.Where(x => x.MenuId == menu.MenuId).FirstOrDefault();
-                EmpObj.MenuName = menu.MenuName;
-                EmpObj.MenuIcon = menu.MenuIcon;
-                EmpObj.DisplayOrder = menu.DisplayOrder;
-                EmpObj.Status = menu.Status;
-                context.SaveChanges();
-                return "Menu Updated Successfully";
-            }
-            else
-            {
-                return "Menu Not Updated! Try Again";
-            }
-        }
+
         #endregion
-
-        #region SubMenu Management
-        // GET: ManageMenu  
-        public ActionResult ManageSubMenu()
-        {
-            if (User.Identity.IsAuthenticated)
-            {
-                if (!User.IsInRole("Admin"))
-                {
-                    return RedirectToAction("AuthorizationError", "Account");
-                }
-            }
-            else
-            {
-                return RedirectToAction("Login", "Account");
-            }
-            ViewBag.SubMenuCount = context.SubMenus.Count();
-            return View();
-        }
-        /// <summary>  
-        ///   
-        /// Get All SubMenu  
-        /// </summary>  
-        /// <returns></returns>  
-        public JsonResult GetAllSubMenu()
-        {
-            var subMenu = (from p in context.SubMenus
-                           join pm in context.Menus on p.MenuId equals pm.MenuId
-                           select new { p.SubMenuId, p.MenuId, pm.MenuName, p.SubMenuName, p.SubMenuIcon, p.DisplayOrder, p.Status }).ToList();
-
-            //List<SubMenuModel> sub = subMenu.Select(a => new SubMenuModel
-            //{
-            //    MenuId = a.MenuId,
-            //    MenuName = a.MenuName,
-            //    SubMenuName = a.MenuName,
-            //    SubMenuIcon = a.SubMenuIcon,
-            //    DisplayOrder = a.DisplayOrder,
-            //    Status = a.Status
-            //}).ToList();
-
-            return Json(subMenu, JsonRequestBehavior.AllowGet);
-        }
-        /// <summary>  
-        /// Get SubMenu With Id  
-        /// </summary>  
-        /// <param name="Id"></param>  
-        /// <returns></returns>  
-        public JsonResult GetSubMenuById(string Id)
-        {
-            int SubMenuId = int.Parse(Id);
-            return Json(context.SubMenus.Find(SubMenuId), JsonRequestBehavior.AllowGet);
-        }
-        /// <summary>  
-        /// Insert New SubMenu  
-        /// </summary>  
-        /// <param name="subMenu"></param>  
-        /// <returns></returns>  
-        public string InsertSubMenu(SubMenus subMenu)
-        {
-            if (subMenu != null && ModelState.IsValid)
-            {
-                context.SubMenus.Add(subMenu);
-                context.SaveChanges();
-                return "SubMenu Added Successfully";
-            }
-            else
-            {
-                return "SubMenu Not Inserted! Try Again";
-            }
-        }
-        /// <summary>
-        /// Delete SubMenu
-        /// </summary>
-        /// <param name="subMenu"></param>
-        /// <returns></returns>
-        public string DeleteSubMenu(SubMenus subMenu)
-        {
-            if (subMenu != null)
-            {
-                var subMenu_ = context.Entry(subMenu);
-                if (subMenu_.State == EntityState.Detached)
-                {
-                    context.SubMenus.Attach(subMenu);
-                    context.SubMenus.Remove(subMenu);
-                }
-                context.SaveChanges();
-                return "SubMenu Deleted Successfully";
-            }
-            else
-            {
-                return "SubMenu Not Deleted! Try Again";
-            }
-        }
-        /// <summary>  
-        /// Update SubMenu Information  
-        /// </summary>  
-        /// <param name="subMenu"></param>  
-        /// <returns></returns>  
-        public string UpdateSubMenu(SubMenus subMenu)
-        {
-            if (subMenu != null && ModelState.IsValid)
-            {
-                var menu_ = context.Entry(subMenu);
-                SubMenus EmpObj = context.SubMenus.Where(x => x.SubMenuId == subMenu.SubMenuId).FirstOrDefault();
-                EmpObj.SubMenuName = subMenu.SubMenuName;
-                EmpObj.SubMenuIcon = subMenu.SubMenuIcon;
-                EmpObj.MenuId = subMenu.MenuId;
-                EmpObj.DisplayOrder = subMenu.DisplayOrder;
-                EmpObj.Status = subMenu.Status;
-                context.SaveChanges();
-                return "SubMenu Updated Successfully";
-            }
-            else
-            {
-                return "SubMenu Not Updated! Try Again";
-            }
-        }
-        #endregion
-
     }
 }

@@ -25,7 +25,8 @@ namespace AdminWebApp.Models
             return userIdentity;
         }
         public virtual ICollection<Menus> Menus { get; set; }
-        public virtual ICollection<SubMenus> SubMenus { get; set; }
+        public virtual ICollection<RoleMenus> RoleMenus { get; set; }
+
     }
     public class Menus
     {
@@ -36,35 +37,29 @@ namespace AdminWebApp.Models
         [StringLength(100)]
         public string MenuName { get; set; }
 
-        [Required]
         [StringLength(100)]
         public string MenuIcon { get; set; }
 
-        [Required]
+        [StringLength(500)]
+        public string MenuLink { get; set; }
+
+        public int ParentId { get; set; }
+
         public int DisplayOrder { get; set; }
 
         public bool Status { get; set; }
     }
-    public class SubMenus
+    public class RoleMenus
     {
         [Key]
-        public int SubMenuId { get; set; }
+        public int Id { get; set; }
+
+        [Required]        
+        public string RoleId { get; set; }
 
         [Required]
         [StringLength(100)]
-        public string SubMenuName { get; set; }
-
-        [Required]
-        [StringLength(100)]
-        public string SubMenuIcon { get; set; }
-
-        [Required]
-        public int MenuId { get; set; }
-
-        [Required]
-        public int DisplayOrder { get; set; }
-
-        public bool Status { get; set; }
+        public string MenuIds { get; set; }        
     }
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
@@ -73,7 +68,7 @@ namespace AdminWebApp.Models
         {
         }
         public DbSet<Menus> Menus { get; set; }
-        public DbSet<SubMenus> SubMenus { get; set; }
+        public DbSet<RoleMenus> RoleMenus { get; set; }
 
         public static ApplicationDbContext Create()
         {

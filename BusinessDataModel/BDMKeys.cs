@@ -12,5 +12,5 @@ namespace BusinessDataModel
         public string ErrorMessage { get; set; }
         public string Message { get; set; }
         public bool Status { get; set; }
-    }
+    }  
 }
