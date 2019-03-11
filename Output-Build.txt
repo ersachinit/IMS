@@ -1,0 +1,1 @@
+﻿1>------ Build started: Project: AdminWebApp, Configuration: Debug Any CPU ------

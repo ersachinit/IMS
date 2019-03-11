@@ -4,6 +4,7 @@ using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.Owin;
 using Owin;
 using System;
+using System.Configuration;
 
 [assembly: OwinStartupAttribute(typeof(AdminWebApp.Startup))]
 namespace AdminWebApp
@@ -36,15 +37,15 @@ namespace AdminWebApp
 
                 var user = new ApplicationUser
                 {
-                    UserName = "sachintripathi@inestweb.com",
-                    Email = "sachintripathi@inestweb.com",
-                    FirstName = "Sachin",
-                    LastName = "Tripathi",
-                    PhoneNumber = "7905442801",
+                    UserName = ConfigurationManager.AppSettings["Email"],
+                    Email = ConfigurationManager.AppSettings["Email"],
+                    //FirstName = "Sachin",
+                    //LastName = "Tripathi",
+                    //PhoneNumber = "7905442801",
                     EmailConfirmed = true,
-                    DOB = Convert.ToDateTime("07/06/1992")
+                    //DOB = Convert.ToDateTime("07/06/1992")
                 };
-                string userPWD = "Test@123";
+                string userPWD = ConfigurationManager.AppSettings["Password"];
                 var chkUser = UserManager.Create(user, userPWD);
 
                 //Add default User to Role Admin    

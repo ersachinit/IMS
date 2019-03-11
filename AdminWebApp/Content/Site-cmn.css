@@ -48,5 +48,5 @@ li.dropdown:hover > .dropdown-menu {
 .required:after {
     content: " *";
     color: red;
-    font-size:large;
+    font-size:medium;
 }

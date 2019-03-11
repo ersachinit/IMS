@@ -1,16 +1,19 @@
 ﻿@model AdminWebApp.Models.RoleMenus
-@{
+@{              
     ViewBag.Title = "ManageRoleMenu";
     List<AdminWebApp.Models.Menus> menuList = ViewBag.Menu;
 }
 <style>
-    ul { list-style: none; }
-    ul#tree {
-    width: 100%;
-    float: left;
-    display: block;
-    padding: 0;
-}
+    ul {
+        list-style: none;
+    }
+
+        ul#tree {
+            width: 100%;
+            float: left;
+            display: block;
+            padding: 0;
+        }
 </style>
 @using (Html.BeginForm("ManageRoleMenu", "Account", FormMethod.Post, new { @class = "form-horizontal", enctype = "multipart/form-data", id = "frm" }))
 {
@@ -46,16 +49,17 @@
                                             {
                                                 <li style="display:inline-block;float:left;background: #fff; border-radius: 5px; border: 1px solid #ccc;margin: 15px 5px;padding: 10px; width: 32%; min-height: 300px;">
                                                     <span style="width: 100%; background: #ccc; display: block; padding: 5px 13px; margin: 0 0 5px;">
-                                                    <input type="checkbox" class="top_most" name="chkMenu" value="@mp.MenuId">@mp.MenuName</span>
+                                                        <input type="checkbox" class="top_most" name="chkMenu" value="@mp.MenuId">@mp.MenuName
+                                                    </span>
                                                     @if (menuList.Count(p => p.ParentId == mp.MenuId) > 0)
                                                     {
                                                         @:<ul>
-                                                    }
+                                                        }
                                                     @RenderMenuItem(menuList, mp)
                                                     @if (menuList.Count(p => p.ParentId == mp.MenuId) > 0)
                                                     {
-                                                        @:</ul>
-                                                    }
+                                                    @:</ul>
+                                                }
                                                 </li>
                                             }
                                         </ul>
@@ -83,30 +87,31 @@
 }
 @helper RenderMenuItem(List<AdminWebApp.Models.Menus> menuList, AdminWebApp.Models.Menus mi)
 {
-    foreach (var cp in menuList.Where(p => p.ParentId == mi.MenuId))
-    {
-        @:<li>
-        <input type="checkbox" name="chkMenu" value="@cp.MenuId">@cp.MenuName
-        if (menuList.Count(p => p.ParentId == cp.MenuId) > 0)
-        {
-            @:<ul>
-        }
-        @RenderMenuItem(menuList, cp)
-        if (menuList.Count(p => p.ParentId == cp.MenuId) > 0)
-        {
-                @:</ul>
-        }
-        else
-        {
-                @:</li>
-        }
-    }
+                    /**/
+
+                    foreach (var cp in menuList.Where(p => p.ParentId == mi.MenuId))
+                    {
+                        @:<li>
+                            <input type="checkbox" name="chkMenu" value="@cp.MenuId">@cp.MenuName
+                            if (menuList.Count(p => p.ParentId == cp.MenuId) > 0)
+                            {
+                                @:<ul>
+                                }
+                                @RenderMenuItem(menuList, cp)
+                                if (menuList.Count(p => p.ParentId == cp.MenuId) > 0)
+                                {
+                                @:</ul>
+                            }
+                            else
+                            {
+                            @:</li>
+                        }
+                    }
 }
 
 
 <script>
     $('input[type=checkbox]').click(function () {
-    debugger
         // children checkboxes depend on current checkbox
     if ($(this).next().find('input[type=checkbox]').length == 0 && $(this).hasClass('top_most')) {
         $(this).parent().next().find('input[type=checkbox]').prop('checked', this.checked);
@@ -126,7 +131,7 @@
             return $(this).next().find(':checked').length;
         });
     }
-        
+
     });
     $(function () {
         $("#btnSubmit").click(function () {
@@ -146,7 +151,7 @@
     //        $.each($("input[type='checkbox']:checked"), function () {
     //            favorite.push($(this).val());
     //        });
-    //        console.log(favorite.join(", "))       
+    //        console.log(favorite.join(", "))
     //    });
     //});
     $("#RoleId").on("change", function () {
@@ -158,19 +163,19 @@
                 data: { RoleId: RoleId },
                 datatype: "JSON",
                 success: function (data) {
+                    $("input[type=checkbox]").prop("checked", false);
                     if (data != false) {
                         $("#Id").val(data[0].Id);
                         data = data[0].MenuIds;
-                        $("input[type=checkbox]").prop("checked", false);
                         var arrayValues = data.split(',');
                         $.each(arrayValues, function (i, val) {
                             $("input[value='" + val + "']").prop('checked', true);
                         });
-                    }                   
+                    }
                 },
                 error: function () {
                 }
-            })      
+            })
         }
     });
 </script>

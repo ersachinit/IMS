@@ -101,7 +101,7 @@ namespace AdminWebApp.Models
         public byte[] UserPhoto { get; set; }
         public string strUserPhoto { get; set; }
 
-
+        [Required]
         [Display(Name = "Date of Birth")]
         public string DOB { get; set; }
         public string FullName { get { return string.Format("{0} {1}", FirstName, LastName); } }
