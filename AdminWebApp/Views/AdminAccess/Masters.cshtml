@@ -1,0 +1,94 @@
+﻿@model AdminWebApp.Models.MasterModel
+@{
+    ViewBag.Title = "Masters";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+@using (Html.BeginForm("AdminAccess", "Masters", FormMethod.Post, new { @class = "form-horizontal", role = "form", enctype = "multipart/form-data", id = "frm" }))
+{
+    <div id="top">
+        <div class="panel panel-primary divList">
+            <div class="panel-heading">
+                <h3 class="box-title">
+                    <b>Manage Masters</b>
+                </h3>
+                <h5>
+                    <span id="spn">Add New Master</span>
+                </h5>
+            </div>
+            <!-- /.box-header -->
+            <div class="panel-body">
+                <div class="container">
+                    <div class="col-lg-12 well">
+                        <div class="row">
+                            @Html.ValidationSummary("", new { @class = "text-danger" })
+                            <form>
+                                <div class="col-sm-12">
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            @Html.HiddenFor(m => m.Id)
+                                            <label class="required">Type Id:</label>
+                                            @Html.DropDownList("TypeId", (SelectList)ViewBag.TypeList, "Select", new { @class = "form-control" })
+                                            <span style="color:gray"><b>Note:</b> In case of ParentMenu choose ParentMenu</span><br />
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="required">Type Name:</label>
+                                            @Html.TextBoxFor(m => m.TypeName, new { @class = "form-control", @placeholder = "Type Name" })
+                                        </div>
+                                        <div class="col-md-3" id="mLink">
+                                            <label>Type Value:</label>
+                                            @Html.TextBoxFor(m => m.TypeValue, new { @class = "form-control", @placeholder = "Type Value" })
+                                        </div>
+                                        <div class="col-md-3" id="mIcon">
+                                            <label>Type Desc:</label>
+                                            @Html.TextBoxFor(m => m.TypeDesc, new { @class = "form-control", @placeholder = "Type Desc" })
+                                        </div>                                        
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <input type="submit" class="btn btn-primary" value="Submit" id="btnSubmit" />
+                                            <span id="Error" style="display:none;color:green"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <hr />
+                <table class="table table-hover table-bordered table-condensed" id="tblMenu" my-directive>
+                    <thead>
+                        <tr>
+                            <th><b>S.N</b></th>
+                            <th><b>Type Name</b></th>                            
+                            <th><b>Action</b></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{if (ViewBag.Menu != null)
+                            {
+                                var a = 1;
+                                foreach (var user in ViewBag.Menu)
+                                {
+                                    <tr>
+                                        <td>@a</td>
+                                        <td>@user.TypeName</td>                                        
+                                        <td>
+                                            <a href="#top" onclick="Edit(@user.Id)"><i class="far fa-edit fa-2x"></i></a>
+                                            <span style="font-size:xx-large"> | </span>
+                                            <a href="@Url.Action("DeleteType", "Account", new { MenuId = user.Id })"><i class="fas fa-trash fa-2x"></i></a>
+                                        </td>
+                                    </tr>
+                                    a++;
+                                }
+                            }
+                        }
+                    </tbody>
+                </table>
+                <div class="panel-footer">
+                    <p class="box-title"><b>Total Users till @String.Format("{0 : dddd, MMMM d, yyyy}", DateTime.Now)  : </b><span class="label label-primary">@ViewBag.MenuCount Menus</span></p>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+

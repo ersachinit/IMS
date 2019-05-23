@@ -1,18 +1,17 @@
-﻿using BusinessDataModel;
-using DataAccessLayer;
-using System;
-using System.Collections;
+﻿using DataAccessLayer;
 using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+using BusinessDataModel;
 namespace BusinessAccessLayer
 {
     public class CommonBAL
     {
-        CommonDataAccess dal = new CommonDataAccess();
-       
+        public List<BDMMenus> GetMenuByRole(string roleId)
+        {
+            return CommonDataAccess.GetMenuByRole(roleId);
+        }
+        public static string ConnectionString()
+        {
+            return ConnectionDB.ConnectionString;
+        }
     }
 }

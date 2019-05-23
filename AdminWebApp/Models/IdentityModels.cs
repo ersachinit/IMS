@@ -61,10 +61,26 @@ namespace AdminWebApp.Models
         [StringLength(100)]
         public string MenuIds { get; set; }        
     }
+    public class MasterModel
+    {
+        [Key]
+        public int Id { get; set; }
+
+        [Required]
+        public int TypeId { get; set; }
+
+        [Required]
+        public string TypeName { get; set; }
+
+        [Required]
+        public string TypeValue { get; set; }
+
+        public string TypeDesc { get; set; }
+    }
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
         public ApplicationDbContext()
-            : base("DefaultConnection", throwIfV1Schema: false)
+            : base(BusinessAccessLayer.CommonBAL.ConnectionString(), throwIfV1Schema: false)
         {
         }
         public DbSet<Menus> Menus { get; set; }

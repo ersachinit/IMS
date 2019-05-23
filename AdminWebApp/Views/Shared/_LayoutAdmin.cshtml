@@ -1,6 +1,6 @@
 ﻿@using Microsoft.AspNet.Identity
 @{
-    List<AdminWebApp.Models.Menus> menuList = ViewBag.MenuByRole;
+    List<BusinessDataModel.BDMMenus> menuList = ViewBag.MenuByRole;
 }
 <!DOCTYPE html>
 <html>
@@ -347,7 +347,7 @@
                         }
                     }
                     
-                    @helper RenderMenuItemMain(List<AdminWebApp.Models.Menus> menuList, AdminWebApp.Models.Menus mi)
+                    @helper RenderMenuItemMain(List<BusinessDataModel.BDMMenus> menuList, BusinessDataModel.BDMMenus mi)
                     {
                         foreach (var cp in menuList.Where(p => p.ParentId == mi.MenuId))
                         {

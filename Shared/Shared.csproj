@@ -64,7 +64,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="EmailTemplate.cs" />
+    <Compile Include="FilePath.cs" />
     <Compile Include="Enums.cs" />
     <Compile Include="Message.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -78,6 +78,10 @@
       <Project>{EA3E2F07-5CFC-44FF-BECB-C971DEC714FD}</Project>
       <Name>BusinessDataModel</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <Content Include="EmailTemplates\SignUp.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

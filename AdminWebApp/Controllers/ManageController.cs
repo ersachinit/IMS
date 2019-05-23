@@ -123,7 +123,7 @@ namespace AdminWebApp.Controllers
                 var message = new IdentityMessage
                 {
                     Destination = model.Number,
-                    Body = "Your security code is: " + code
+                    Body = "Your security code is: " + code,
                 };
                 await UserManager.SmsService.SendAsync(message);
             }
@@ -333,7 +333,7 @@ namespace AdminWebApp.Controllers
             base.Dispose(disposing);
         }
 
-#region Helpers
+        #region Helpers
         // Used for XSRF protection when adding external logins
         private const string XsrfKey = "XsrfId";
 
@@ -384,6 +384,6 @@ namespace AdminWebApp.Controllers
             Error
         }
 
-#endregion
+    #endregion
     }
 }

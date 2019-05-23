@@ -17,6 +17,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
+using System.Web.Hosting;
 using System.Web.Mvc;
 using System.Web.Security;
 
@@ -29,7 +30,7 @@ namespace AdminWebApp.Controllers
         ApplicationDbContext context;
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
-        readonly EmailTemplate email = new EmailTemplate();
+        readonly FilePath email = new FilePath();
         readonly SMSUtility SMS = new SMSUtility();
         CommonBAL bal = new CommonBAL();
 
@@ -103,7 +104,7 @@ namespace AdminWebApp.Controllers
                         AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
                         return View("ConfirmYourEmail");
                     }
-                    SetUserImage(userDetail);
+                    //SetUserImage(userDetail);
                     SMS.SendByTwilioWhatsApp(userDetail.PhoneNumber, "Welcome " + userDetail.FirstName + ", You have succesfully logged in!");
                     return RedirectToAction("Dashboard", "Home");//RedirectToLocal(returnUrl);
                 case SignInStatus.LockedOut:
@@ -116,20 +117,20 @@ namespace AdminWebApp.Controllers
                     return View(model);
             }
         }
-        protected void SetUserImage(ApplicationUser userDetail)
-        {
-            if (userDetail != null)
-            {
-                if (userDetail.UserPhoto != null)
-                {
-                    Session["UserPhoto"] = "data:image/png;base64," + Convert.ToBase64String(userDetail.UserPhoto);
-                }
-                else
-                {
-                    Session["UserPhoto"] = "/Images/UserProfileImages/noImgSmall.png";
-                }
-            }
-        }
+        //protected void SetUserImage(ApplicationUser userDetail)
+        //{
+        //    if (userDetail != null)
+        //    {
+        //        if (userDetail.UserPhoto != null)
+        //        {
+        //            Session["UserPhoto"] = "data:image/png;base64," + Convert.ToBase64String(userDetail.UserPhoto);
+        //        }
+        //        else
+        //        {
+        //            Session["UserPhoto"] = "/Images/UserProfileImages/noImgSmall.png";
+        //        }
+        //    }
+        //}
         [AllowAnonymous]
         public async Task<JsonResult> ConfirmYourEmail(string UserId)
         {
@@ -142,11 +143,19 @@ namespace AdminWebApp.Controllers
                 string code = await UserManager.GenerateEmailConfirmationTokenAsync(UserId);
                 var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = UserId, code }, protocol: Request.Url.Scheme);
                 var userDetail = UserManager.FindById(UserId);
-                StringBuilder st = new StringBuilder();
-                st.Append("<!DOCTYPE html><html><head><meta charset='utf - 8'/><title>Confirm Email</title></head><body><div style='width: 650px; min - height:420px; margin: 0 auto; padding - top:1px; background - color:#1d8e07'><div style='height:auto;margin-left:8px;width:642px;min-height:420px;background-color:#fff'><div style='min-height:250px;padding:30px 35px 30px;margin:0;line-height:1.5em;word-wrap:break-word'><br /><div>Hi " + userDetail.FirstName + ", <br></div><div><br></div><div>Please confirm below link to complete your request that you submitted on our website.<br></div><div><br></div>");
-                st.Append("<div><a style='border: 1px solid #1d8e07;background:#1d8e07;display:inline-block;padding:7px 15px;text-decoration:none;color:#fff' href=\"" + callbackUrl + "\" target='_blank'>Click here to confirm</a> <br></div>");
-                st.Append("<div><br></div><br /><br /><br /><div>Thanks!<br></div><div><br></div><div>BASE Institution Team,<br></div></div></div></div></body></html>");
-                await UserManager.SendEmailAsync(UserId, "Confirm your account", st.ToString());
+
+                //Fetching Path of email teamplate folder in Shared .  
+                string FilePath = Shared.FilePath.GetEmailTemplatesFolderPath;
+
+                // Read the file as one string. 
+                StreamReader str = new StreamReader(FilePath);
+                string MailText = str.ReadToEnd();
+                str.Close();
+
+                //Repalce variables   
+                MailText = MailText.Replace("[UserName]", userDetail.FirstName);
+                MailText = MailText.Replace("[CallBackUrl]", callbackUrl);
+                await UserManager.SendEmailAsync(UserId, "Confirm your account", MailText);
                 return Json(true, JsonRequestBehavior.AllowGet);
             }
             catch (Exception)
@@ -189,7 +198,7 @@ namespace AdminWebApp.Controllers
             {
                 case SignInStatus.Success:
                     var userDetail = UserManager.Users.FirstOrDefault();
-                    SetUserImage(userDetail);
+                    //SetUserImage(userDetail);
                     return RedirectToLocal(model.ReturnUrl);
                 case SignInStatus.LockedOut:
                     return View("Lockout");

@@ -32,6 +32,7 @@ namespace AdminWebApp
             var Port = WebConfigurationManager.AppSettings["Port"];
             try
             {
+
                 //do whatever you want to the message  
                 MailAddress from = new MailAddress(From, FromName);
                 MailAddress to = new MailAddress(message.Destination);
@@ -50,7 +51,7 @@ namespace AdminWebApp
 
                 return Task.FromResult(0);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 return Task.FromResult(0);
             }

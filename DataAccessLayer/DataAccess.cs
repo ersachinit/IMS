@@ -2,14 +2,15 @@
 using System.Configuration;
 using System.Collections;
 using System.Data.SqlClient;
-using AdminWebApp.Models;
 using System.Collections.Generic;
 using System;
+using DataAccessLayer;
 
-public class CommonDataAccess
+public class DataAccess
 {
-    private static string str2 = ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
-    public CommonDataAccess()
+    private static string str2 = ConnectionDB.ConnectionString;
+    SqlConnection conn = new SqlConnection(str2);
+    public DataAccess()
     {
         //
         // TODO: Add constructor logic here
@@ -51,58 +52,7 @@ public class CommonDataAccess
             cmd.Connection.Dispose();
             cmd.Dispose();
         }
-    }
-
-    /// <summary>
-    /// Get DataTable by ArrayList
-    /// </summary>
-    /// <param name="SP"></param>
-    /// <param name="FieldName"></param>
-    /// <param name="FieldType"></param>
-    /// <param name="FieldValue"></param>
-    /// <returns></returns>
-    public List<Menus> GetMenuList(string SP, ArrayList FieldName, ArrayList FieldType, ArrayList FieldValue)
-    {
-        SqlConnection conn = new SqlConnection(str2);
-        SqlCommand cmd = new SqlCommand(SP, conn);
-        List<Menus> menus = new List<Menus>();
-        SqlDataReader reader = null;
-        try
-        {
-            cmd.CommandType = CommandType.StoredProcedure;
-            for (int f = 0; f < FieldName.Count; f++)
-            {
-                cmd.Parameters.AddWithValue("@" + FieldName[f].ToString(), "SqlDbType." + FieldType[f].ToString()).Value = FieldValue[f];
-            }
-            conn.Open();
-            cmd.Prepare();
-            reader = cmd.ExecuteReader();
-            while (reader.Read())
-            {
-                Menus f = new Menus();
-                f.MenuId = (int)reader["MenuId"];
-                f.MenuName = Convert.ToString(reader["MenuName"]);
-                f.MenuIcon = Convert.ToString(reader["MenuIcon"]);
-                f.MenuLink = Convert.ToString(reader["MenuLink"]);
-                f.ParentId = (int)reader["ParentId"];
-                f.DisplayOrder = (int)reader["DisplayOrder"];
-                f.Status = (bool)reader["Status"];
-                menus.Add(f);
-            }
-            conn.Close();
-            return menus;
-        }
-        catch (SqlException)
-        {
-            return menus;
-        }
-        finally
-        {
-            reader.Dispose();
-            cmd.Connection.Dispose();
-            cmd.Dispose();
-        }
-    }
+    }    
 
     /// <summary>
     /// Get Data Table by Stored Procedure
@@ -111,7 +61,6 @@ public class CommonDataAccess
     /// <returns></returns>
     public DataTable GetDataTable(string SP)
     {
-        SqlConnection conn = new SqlConnection(str2);
         SqlCommand cmd = new SqlCommand(SP, conn);
         SqlDataAdapter da = new SqlDataAdapter(cmd);
         DataTable dt = new DataTable();
