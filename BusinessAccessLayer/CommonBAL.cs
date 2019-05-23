@@ -13,5 +13,9 @@ namespace BusinessAccessLayer
         {
             return ConnectionDB.ConnectionString;
         }
+        public static string CompanyName()
+        {
+            return CommonDataAccess.CompanyName;
+        }
     }
 }

@@ -24,3 +24,4 @@ Angular CRUD for Menu Done
 ----------------------------------------------------------
 Dynamic Menu Done
 ----------------------------------------------------------
+Menu Setting, Type Master, Email Teamplate, Connection Dynmaic

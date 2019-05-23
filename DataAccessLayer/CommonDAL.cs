@@ -13,6 +13,10 @@ namespace DataAccessLayer
 {
     public class CommonDataAccess
     {
+        public static string CompanyName
+        {
+            get { return "Diary"; }
+        }
         public static List<BDMMenus> GetMenuByRole(string roleId)
         {
             List<BDMMenus> menuList = new List<BDMMenus>();

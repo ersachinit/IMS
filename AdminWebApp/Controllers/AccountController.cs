@@ -155,7 +155,8 @@ namespace AdminWebApp.Controllers
                 //Repalce variables   
                 MailText = MailText.Replace("[UserName]", userDetail.FirstName);
                 MailText = MailText.Replace("[CallBackUrl]", callbackUrl);
-                await UserManager.SendEmailAsync(UserId, "Confirm your account", MailText);
+                MailText = MailText.Replace("[CompanyName]", CommonBAL.CompanyName());
+                await UserManager.SendEmailAsync(UserId, CommonBAL.CompanyName() + ": Confirm your account", MailText);
                 return Json(true, JsonRequestBehavior.AllowGet);
             }
             catch (Exception)
@@ -402,7 +403,7 @@ namespace AdminWebApp.Controllers
                 st.Append("<div><a style='border: 1px solid #1d8e07;background:#1d8e07;display:inline-block;padding:7px 15px;text-decoration:none;color:#fff' href=\"" + callbackUrl + "\" target='_blank'>Click here to reset</a> <br></div>");
                 st.Append("<div><br></div><br /><br /><br /><div>Thanks!<br></div><div><br></div><div>BASE Institution Team,<br></div></div></div></div></body></html>");
 
-                await UserManager.SendEmailAsync(user.Id, "Reset Password", st.ToString());
+                await UserManager.SendEmailAsync(user.Id, CommonBAL.CompanyName() + ": Reset Password", st.ToString());
                 ViewBag.Header = "Email sent succesfully!";
                 ViewBag.Error = "Please check your email to reset your password.";
                 ViewBag.Class = "alert alert-success";
