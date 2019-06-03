@@ -14,7 +14,6 @@
     });
     $('[data-toggle="tooltip"]').tooltip();
 });
-
 function GetDatatableFor(id) {
     $('#' + id + '').DataTable({
         "paging": true,
@@ -22,7 +21,8 @@ function GetDatatableFor(id) {
         "searching": true,
         "ordering": true,
         "info": true,
-        "autoWidth": true
+        "autoWidth": true,
+        //"scrollX": true
     });
 }
 function toastrMsg(msg, method) {

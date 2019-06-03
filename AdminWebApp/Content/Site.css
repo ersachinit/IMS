@@ -134,7 +134,7 @@ textarea {
 /*Loader End*/
 /* Sticky Social Bar */
 
-.icon-bar {
+.social-icon-bar {
     position: fixed;
     top: 50%;
     -webkit-transform: translateY(-50%);
@@ -142,7 +142,7 @@ textarea {
     transform: translateY(-50%);
 }
 
-    .icon-bar a {
+    .social-icon-bar a {
         display: block;
         text-align: center;
         padding: 5px;
@@ -151,7 +151,7 @@ textarea {
         font-size: 20px;
     }
 
-        .icon-bar a:hover {
+        .social-icon-bar a:hover {
             background-color: #000;
         }
 

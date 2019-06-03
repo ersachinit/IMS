@@ -28,13 +28,13 @@
     <div class="ajax-loader">
         <img src="~/Images/loader5.gif" class="img-responsive" />
     </div>
-    <div class="icon-bar">
+    @*<div class="social-icon-bar">
         <a href="#" class="facebook"><i class="fab fa-facebook-f"></i></a>
         <a href="#" class="twitter"><i class="fab fa-twitter"></i></a>
         <a href="#" class="google"><i class="fab fa-google"></i></a>
         <a href="#" class="linkedin"><i class="fab fa-linkedin-in"></i></a>
         <a href="#" class="youtube"><i class="fab fa-youtube"></i></a>
-    </div>
+    </div>*@
     <button onclick="topFunction()" id="myBtn" data-toggle="tooltip" title="Back To Top!" data-placement="left"> <span ><i class="fas fa-angle-double-up"></i></span></button>
     @*<div class="floater-icons" style="display: block;" >
         <p>
@@ -54,7 +54,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                @Html.ActionLink("Application Name", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+                @Html.ActionLink(BusinessAccessLayer.CommonBAL.CompanyName(), "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
             </div>
             <div class="navbar-collapse collapse">
                 @if ((HttpContext.Current.User != null) && HttpContext.Current.User.Identity.IsAuthenticated)
@@ -73,7 +73,7 @@
         @RenderBody()
         <hr />
         <footer>
-            <p>&copy; @DateTime.Now.Year - My ASP.NET Application</p>
+            <p>Copyright © @DateTime.Now.Year @BusinessAccessLayer.CommonBAL.CompanyName(), All rights reserved.</p>
         </footer>
     </div>
     @Scripts.Render("~/bundles/bootstrap")
