@@ -31,12 +31,12 @@
                                         @Html.LabelFor(m => m.LastName)
                                         @Html.TextBoxFor(m => m.LastName, new { @class = "form-control", onkeypress = "return validateAlp(event)" })
                                     </div>
-                                </div>
-                                <div class="row">
                                     <div class="col-md-4">
                                         @Html.LabelFor(m => m.Email)
                                         @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
                                     </div>
+                                </div>
+                                <div class="row">
                                     <div class="col-md-4">
                                         @Html.LabelFor(m => m.Password)
                                         @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
@@ -45,22 +45,36 @@
                                         @Html.LabelFor(m => m.ConfirmPassword)
                                         @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control" })
                                     </div>
-                                </div>
-                                <div class="row">
                                     <div class="col-md-4">
                                         @Html.LabelFor(m => m.PhoneNo)
                                         @Html.TextBoxFor(m => m.PhoneNo, new { @class = "form-control", onkeypress = "return validateInt(event)", minlength = "10", maxlength = "13" })
                                     </div>
+                                </div>
+                                <div class="row">
                                     <div class="col-md-4">
                                         @Html.Label("User Role")
-                                        @Html.DropDownList("UserRoles", (SelectList)ViewBag.Name, "Select", new { @class = "form-control" })
+                                        @Html.DropDownList("UserRoles", (SelectList)ViewBag.Roles, "Select", new { @class = "form-control" })
                                     </div>
                                     <div class="col-md-4">
                                         @Html.Label("Date of Birth")
                                         @Html.TextBoxFor(m => m.DOB, new { @class = "form-control Calender", autocomplete = "off" })
                                     </div>
+                                    @if (User.IsInRole("SuperAdmin"))
+                                    {
+                                        <div class="col-md-4">
+                                            @Html.Label("Company")
+                                            @Html.DropDownList("CompanyId", (SelectList)ViewBag.Companies, "Select", new { @class = "form-control" })
+                                        </div>
+                                    }
+                                    else if (User.IsInRole("Admin"))
+                                    {
+                                        <div class="col-md-4">
+                                            @Html.HiddenFor(m => m.CompanyId)
+                                        </div>
+                                    }
+
                                 </div>
-                                <div class="row">
+                                       <div class="row">
                                     <div class="col-md-4">
                                         @Html.Label("Profile Image")
                                         @*<input type="file" name="UserPhoto" id="fileUpload" accept=".png,.jpg,.jpeg,.gif,.tif" onchange="show(this)" data-buttonText="Select a File" class="btn btn-default btn-file"/>*@
@@ -105,21 +119,22 @@
                     {
                         a = a + 1;
                         <tr>
-                            <td>@a</td>
-                            <td>@user.UserName</td>
-                            <td>@user.Email</td>
-                            <td>@user.Role</td>
+                            <td> @a </td>
+                            <td> @user.UserName </td>
+                            <td> @user.Email </td>
+                            <td> @user.Role </td>
                             <td>
-                                @if (user.Role != "Admin")
-                                {
-                                    <a href="javascript:void(0)" onclick="GetUserDetail('@user.UserId')"><i class="far fa-edit fa-2x"></i></a><span style="font-size:xx-large"> | </span><a href="@Url.Action("DeleteConfirmed", "Account", new { UserId = @user.UserId})"><i class="fas fa-trash fa-2x"></i></a>
-                                }
-                                else
-                                {
-                                    <a href="javascript:void(0)"><i class="far fa-times-circle fa-2x" style="color:red" title="No Action"></i></a>
-                                }
+                                <a href="javascript:void(0)" onclick="GetUserDetail('@user.UserId')"><i class="far fa-edit fa-2x"></i></a>
+                                <span style="font-size:xx-large">
+                                    |
+                                </span><a href="@Url.Action("DeleteConfirmed", "Account", new { UserId = @user.UserId })"><i class="fas fa-trash fa-2x"></i></a>
                             </td>
                         </tr>
+                        //}
+                        @*else
+                            {
+                                <a href="javascript:void(0)"><i class="far fa-times-circle fa-2x" style="color:red" title="No Action"></i></a>
+                            }*@
                     }
                 }
 
@@ -170,6 +185,7 @@
                             $('#Email').val(userInfo.Email);
                             $('#PhoneNo').val(userInfo.PhoneNo);
                             $("#UserRoles").val(userInfo.UserRoles);
+                            $("#CompanyId").val(userInfo.CompanyId);
                             $("#DOB").val($.datepicker.formatDate('mm/dd/yy', new Date(userInfo.DOB)));
                             $('#user_img').attr('src', userInfo.strUserPhoto);
                             $('#btnSubmit').val("Update");

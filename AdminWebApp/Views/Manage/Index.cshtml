@@ -86,10 +86,11 @@
             {
             <dt>Admin Action:</dt>
             <dd>
-
                 <text>[&nbsp;&nbsp;<a href="@Url.Action("Register", "Account")">Create User</a>&nbsp;&nbsp;]</text>
-                <text>[&nbsp;&nbsp;<a href="@Url.Action("CreateRoles", "Account")">Create Role</a>&nbsp;&nbsp;]</text>
-
+                @if (User.IsInRole("SuperAdmin"))
+                {
+                    <text>[&nbsp;&nbsp;<a href="@Url.Action("CreateRoles", "Account")">Create Role</a>&nbsp;&nbsp;]</text>
+                }
             </dd>   
         }
     </dl>

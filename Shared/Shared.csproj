@@ -79,7 +79,6 @@
       <Name>BusinessDataModel</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
     <Content Include="EmailTemplates\SignUp.txt" />
   </ItemGroup>

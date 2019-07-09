@@ -105,6 +105,10 @@ namespace AdminWebApp.Models
         [Display(Name = "Date of Birth")]
         public string DOB { get; set; }
         public string FullName { get { return string.Format("{0} {1}", FirstName, LastName); } }
+
+        public string CreatedBy { get; set; }
+        public bool Active { get; set; }
+        public string CompanyId { get; set; }
     }
 
     public class ResetPasswordViewModel
@@ -147,6 +151,7 @@ namespace AdminWebApp.Models
         public string UserName { get; set; }
         public string Email { get; set; }
         public string Role { get; set; }
+        public string CreatedBy { get; set; }
     }
     public class SubMenuModel
     {

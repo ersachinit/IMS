@@ -14,9 +14,12 @@ namespace AdminWebApp.Models
     public class ApplicationUser : IdentityUser
     {
         public string FirstName { get; set; }
-        public string LastName { get; set; }
+        public string LastName { get; set; }        
         public DateTime DOB { get; set; }
         public byte[] UserPhoto { get; set; }
+        public string CreatedBy { get; set; }
+        public bool Active { get; set; }
+        public string CompanyId { get; set; }
         public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<ApplicationUser> manager)
         {
             // Note the authenticationType must match the one defined in CookieAuthenticationOptions.AuthenticationType
@@ -26,7 +29,7 @@ namespace AdminWebApp.Models
         }
         public virtual ICollection<Menus> Menus { get; set; }
         public virtual ICollection<RoleMenus> RoleMenus { get; set; }
-
+        public virtual ICollection<Companies> Companies { get; set; }
     }
     public class Menus
     {
@@ -85,6 +88,8 @@ namespace AdminWebApp.Models
         }
         public DbSet<Menus> Menus { get; set; }
         public DbSet<RoleMenus> RoleMenus { get; set; }
+        public DbSet<Companies> Companies { get; set; }
+
 
         public static ApplicationDbContext Create()
         {
@@ -109,5 +114,22 @@ namespace AdminWebApp.Models
             modelBuilder.Entity<IdentityUserLogin>()
                 .ToTable("UserLogin");
         }
+    }
+    public class Companies
+    {
+        [Key]
+        public int CompanyId { get; set; }
+
+        [Required]
+        [StringLength(100)]
+        public string CompanyName { get; set; }
+
+        [StringLength(100)]
+        public string Website { get; set; }
+
+        [StringLength(50)]
+        public string Phone { get; set; }
+
+        public bool Active { get; set; }
     }
 }

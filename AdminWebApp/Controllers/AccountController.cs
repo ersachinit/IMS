@@ -7,7 +7,6 @@ using Microsoft.Owin.Security;
 using Shared;
 using SMS;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.IO;
@@ -17,9 +16,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
-using System.Web.Hosting;
 using System.Web.Mvc;
-using System.Web.Security;
 
 namespace AdminWebApp.Controllers
 {
@@ -215,30 +212,59 @@ namespace AdminWebApp.Controllers
         [AllowAnonymous]
         public ActionResult Register()
         {
-            if (User.IsInRole("Admin"))
+            RegisterViewModel model = new RegisterViewModel();
+            if (User.IsInRole("Admin") || User.IsInRole("SuperAdmin"))
             {
-                ViewBag.Name = new SelectList(context.Roles.Where(u => !u.Name.Contains("Admin")).ToList(), "Name", "Name");
-                context = new ApplicationDbContext();
-                ViewBag.Count = UserManager.Users.Count();
-                ViewBag.UsersWithRole = (from user in context.Users
-                                         select new
-                                         {
-                                             UserId = user.Id,
-                                             Username = user.UserName,
-                                             user.Email,
-                                             RoleNames = (from userRole in user.Roles
-                                                          join role in context.Roles on userRole.RoleId
-                                                          equals role.Id
-                                                          select role.Name).ToList()
-                                         }).ToList().Select(p => new UsersInRoleModel()
-
-                                         {
-                                             UserId = p.UserId,
-                                             UserName = p.Username,
-                                             Email = p.Email,
-                                             Role = string.Join(",", p.RoleNames)
-                                         });
-                return View();
+                dynamic userWithRole = null;
+                if (User.IsInRole("SuperAdmin"))
+                {
+                    ViewBag.Roles = new SelectList(context.Roles.ToList(), "Name", "Name");
+                    ViewBag.Companies = new SelectList(context.Companies.ToList(), "CompanyId", "CompanyName");
+                    userWithRole = (from user in context.Users
+                                    select new
+                                    {
+                                        UserId = user.Id,
+                                        Username = user.UserName,
+                                        user.Email,
+                                        RoleNames = (from userRole in user.Roles
+                                                     join role in context.Roles on userRole.RoleId
+                                                     equals role.Id
+                                                     select role.Name).ToList()
+                                    }).ToList().Select(p => new UsersInRoleModel()
+                                    {
+                                        UserId = p.UserId,
+                                        UserName = p.Username,
+                                        Email = p.Email,
+                                        Role = string.Join(",", p.RoleNames)
+                                    });
+                }
+                else if (User.IsInRole("Admin"))
+                {
+                    ViewBag.Roles = new SelectList(context.Roles.Where(u => u.Name.Equals("Account") || u.Name.Equals("Faculty")).ToList(), "Name", "Name");
+                    model.CompanyId = CompanyId(User.Identity.GetUserId());
+                    userWithRole = (from user in context.Users
+                                    select new
+                                    {
+                                        UserId = user.Id,
+                                        Username = user.UserName,
+                                        user.Email,
+                                        user.CreatedBy,
+                                        RoleNames = (from userRole in user.Roles
+                                                     join role in context.Roles on userRole.RoleId
+                                                     equals role.Id
+                                                     select role.Name)
+                                    }).ToList().Select(p => new UsersInRoleModel()
+                                    {
+                                        UserId = p.UserId,
+                                        UserName = p.Username,
+                                        Email = p.Email,
+                                        CreatedBy = p.CreatedBy,
+                                        Role = string.Join(",", p.RoleNames)
+                                    }).Where(u => (u.Role.Equals("Account") || u.Role.Equals("Faculty")) && u.CreatedBy == User.Identity.GetUserId());
+                }
+                ViewBag.UsersWithRole = userWithRole;
+                //ViewBag.Count = UserManager.Users.Where(u => u.CreatedBy == User.Identity.GetUserId()).Count();
+                return View(model);
             }
             else
             {
@@ -271,7 +297,7 @@ namespace AdminWebApp.Controllers
             {
                 if (ModelState.IsValid)
                 {
-                    var user = new ApplicationUser { UserName = model.Email, Email = model.Email, FirstName = model.FirstName, LastName = model.LastName, PhoneNumber = model.PhoneNo, UserPhoto = imageData, DOB = Convert.ToDateTime(model.DOB) };
+                    var user = new ApplicationUser { UserName = model.Email, Email = model.Email, FirstName = model.FirstName, LastName = model.LastName, PhoneNumber = model.PhoneNo, UserPhoto = imageData, DOB = Convert.ToDateTime(model.DOB), CreatedBy = User.Identity.GetUserId(), Active = true, CompanyId = model.CompanyId };
                     var result = await UserManager.CreateAsync(user, model.Password);
                     if (result.Succeeded)
                     {
@@ -282,7 +308,6 @@ namespace AdminWebApp.Controllers
                         await ConfirmYourEmail(user.Id);
                         return RedirectToAction("Register", "Account");
                     }
-                    ViewBag.Name = new SelectList(context.Roles.Where(u => !u.Name.Contains("Admin")).ToList(), "Name", "Name");
                     AddErrors(result);
                 }
             }
@@ -300,6 +325,9 @@ namespace AdminWebApp.Controllers
                     user.PasswordHash = HashPassword(model.Password);
                     user.PhoneNumber = model.PhoneNo;
                     user.DOB = Convert.ToDateTime(model.DOB);
+                    user.CreatedBy = User.Identity.GetUserId();
+                    user.Active = true;
+                    user.CompanyId = model.CompanyId; 
 
                     if (imageData != null)
                     {
@@ -758,7 +786,7 @@ namespace AdminWebApp.Controllers
         {
             if (User.Identity.IsAuthenticated)
             {
-                if (!User.IsInRole("Admin"))
+                if (!User.IsInRole("SuperAdmin"))
                 {
                     return RedirectToAction("AuthorizationError", "Account");
                 }
@@ -830,6 +858,7 @@ namespace AdminWebApp.Controllers
                     UserInfo.Email = user.Email;
                     UserInfo.PhoneNo = user.PhoneNumber;
                     UserInfo.DOB = Convert.ToString(user.DOB);
+                    UserInfo.CompanyId = user.CompanyId;
                     if (user.UserPhoto != null)
                     {
                         UserInfo.strUserPhoto = "data:image/png;base64," + Convert.ToBase64String(user.UserPhoto);
@@ -856,7 +885,7 @@ namespace AdminWebApp.Controllers
         {
             if (User.Identity.IsAuthenticated)
             {
-                if (!User.IsInRole("Admin"))
+                if (!User.IsInRole("SuperAdmin"))
                 {
                     return RedirectToAction("AuthorizationError", "Account");
                 }
@@ -932,7 +961,7 @@ namespace AdminWebApp.Controllers
         {
             if (User.Identity.IsAuthenticated)
             {
-                if (!User.IsInRole("Admin"))
+                if (!User.IsInRole("SuperAdmin"))
                 {
                     return RedirectToAction("AuthorizationError", "Account");
                 }
@@ -941,7 +970,7 @@ namespace AdminWebApp.Controllers
             else
             {
                 return RedirectToAction("Login", "Account");
-            }            
+            }
             ViewBag.Menu = context.Menus.ToList();
             ViewBag.MenuCount = context.Menus.Count();
             return View();
@@ -1031,5 +1060,10 @@ namespace AdminWebApp.Controllers
         }
 
         #endregion
+        private string CompanyId(string userId)
+        {
+            var user = UserManager.FindById(userId);
+            return user.CompanyId;           
+        }
     }
 }

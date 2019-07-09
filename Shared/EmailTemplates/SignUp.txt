@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf - 8' />
+    <title>Confirm Email</title>
+</head>
+<body>
+    <div style='width: 650px; min - height: 420px; margin: 0 auto; padding - top: 1px; background - color: #1d8e07'>
+        <div style='height: auto; margin-left: 8px; width: 642px; min-height: 420px; background-color: #fff'>
+            <div style='min-height: 250px; padding: 30px 35px 30px; margin: 0; line-height: 1.5em; word-wrap: break-word'>
+                <br />Hi [UserName],<br /><br />
+                Please confirm below link to complete your request that you submitted on our website.<br>
+                <br />
+                <a style='border: 1px solid #1d8e07; background: #1d8e07; display: inline-block; padding: 7px 15px; text-decoration: none; color: #fff' href="[CallBackUrl]" target='_blank'>Click here to confirm</a><br /><br /><br /><br /><br />
+
+                Thanks!<br />
+                [CompanyName] Team,<br />
+            </div>
+        </div>
+    </div>
+</body>
+</html>

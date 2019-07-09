@@ -10,9 +10,9 @@
         }
         <ul class="nav navbar-nav">
 
-            @if (User.IsInRole("Admin"))
+            @if (User.IsInRole("SuperAdmin"))
             {
-                ViewData["FirstName"] = "Admin";
+                ViewData["FirstName"] = "SuperAdmin";
                 <li class="dropdown">
                     <a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown">Menu Setting <b class="caret"></b></a>
                     <ul class="dropdown-menu" role="menu">
@@ -25,9 +25,12 @@
                     <a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown"><img src="@Session["UserPhoto"]" name="aboutme" width="20" height="20" alt="User" class="img-circle"> Hello @ViewData["FirstName"] <b class="caret"></b></a>
                     <ul class="dropdown-menu" role="menu">
                         <li><a href="#" class=" dropdown-toggle userImage" data-toggle="modal" data-target="#myModal"><i class="fas fa-user-circle pull-right"></i> Profile</a></li>
-                        @if (User.IsInRole("Admin"))
+                        @if (User.IsInRole("Admin") || User.IsInRole("SuperAdmin"))
                         {
                             <li><a href="@Url.Action("Register", "Account")"><i class="fas fa-plus-square pull-right"></i> Manage User</a></li>
+                        }
+                        @if (User.IsInRole("SuperAdmin"))
+                        {
                             <li><a href="@Url.Action("CreateRoles", "Account")"><i class="far fa-user-circle pull-right"></i> Manage Roles</a></li>
                         }
                         <li><a href="@Url.Action("Index", "Manage")"><i class="fas fa-cog pull-right"></i> Setting</a></li>
